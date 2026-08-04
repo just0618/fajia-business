@@ -369,17 +369,48 @@ def browser_collect(
                                     captured[key] = number
                                     break
 
-                if len(captured) < 3 and not blocked:
-                    # Screenshot supplied by the user shows this stable anchor inside
-                    # data-e2e="video-detail-info". The surrounding class is hashed,
-                    # so we deliberately avoid relying on it.
+                if len(captured) < 4 and not blocked:
+                    # 抖音当前页面实际使用的是 detail-video-info，
+                    # 不能写成 video-detail-info。
                     share_anchor = page.locator(
-                        '[data-e2e="video-detail-info"] [data-e2e="video-share-icon-container"]'
+                        '[data-e2e="detail-video-info"] '
+                        '[data-e2e="video-share-icon-container"]:visible'
                     ).first
-                    if share_anchor.count():
-                        parent = share_anchor.locator("xpath=..").first
-                        sibling_texts = parent.locator(":scope > *").all_inner_texts()
-                        row = extract_four_metric_row(sibling_texts)
+
+                    try:
+                        share_anchor.wait_for(
+                            state="visible",
+                            timeout=15_000,
+                        )
+                    except PlaywrightTimeoutError:
+                        # 如果外层 data-e2e 再次调整，则直接寻找当前可见的分享按钮。
+                        share_anchor = page.locator(
+                            '[data-e2e="video-share-icon-container"]:visible'
+                        ).first
+                        share_anchor.wait_for(
+                            state="visible",
+                            timeout=10_000,
+                        )
+
+                    # 分享按钮是四项数据行的最后一个直接子元素，
+                    # 它的父元素就是：点赞、评论、收藏、分享。
+                    metric_row = share_anchor.locator("xpath=..").first
+                    sibling_texts = metric_row.locator(
+                        ":scope > *"
+                    ).all_inner_texts()
+
+                    row = extract_four_metric_row(sibling_texts)
+
+                    if row:
+                        # 保留网络请求中获得的精确值，
+                        # 只使用页面数据补齐缺失字段。
+                        for key, value in row.items():
+                            captured.setdefault(key, value)
+
+                        log(
+                            f"[douyin/dom] {item_id}: "
+                            f"texts={sibling_texts}, parsed={row}"
+                        )
                         if row:
                             captured.update(row)
 
