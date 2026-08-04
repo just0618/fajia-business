@@ -1,0 +1,54 @@
+name: Update public metrics
+
+on:
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: "Save browser screenshots/HTML for diagnosis"
+        required: false
+        default: "true"
+  schedule:
+    - cron: "20 4 * * *" # daily, 12:20 Beijing time
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install scraper dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install requests playwright
+          python -m playwright install --with-deps chromium
+      - name: Collect public metrics
+        run: |
+          DEBUG_ARG=""
+          if [ "${{ github.event.inputs.debug }}" = "true" ]; then DEBUG_ARG="--debug"; fi
+          python scripts/update_public_metrics.py $DEBUG_ARG
+      - name: Upload diagnostics when present
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: social-metric-debug-${{ github.run_number }}
+          path: debug-social/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Commit changed public data
+        run: |
+          if git diff --quiet -- assets/social-data.json; then
+            echo "No data changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/social-data.json
+          git commit -m "chore: update public social metrics"
+          git push

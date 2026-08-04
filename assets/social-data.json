@@ -1,0 +1,132 @@
+{
+  "updated": "2026-08-04",
+  "sources": {
+    "douyin": {
+      "faxuange_profile": "https://v.douyin.com/a3h78uwRapI/",
+      "hejiashu_profile": "https://v.douyin.com/7BCq-sWFMkM/"
+    },
+    "weibo": {
+      "faxuange_uid": "1118449424",
+      "hejiashu_uid": "8348577978",
+      "jewelrybox_uid": "8344769962"
+    },
+    "xhs": {
+      "faxuange_profile": "https://xhslink.cn/m/1ToXOT02l1Q",
+      "hejiashu_profile": "https://xhslink.cn/m/2OgckKQ3yP4",
+      "jewelrybox_profile": "https://xhslink.cn/m/2l1aZ5rdDgT"
+    }
+  },
+  "platforms": {
+    "douyin": {
+      "faxuange": {
+        "followers": 214000,
+        "engagement": 2491000
+      },
+      "hejiashu": {
+        "followers": 319000,
+        "engagement": 5093000
+      }
+    },
+    "weibo": {
+      "faxuange": {
+        "followers": 207000,
+        "engagement": 892000
+      },
+      "hejiashu": {
+        "followers": 278000,
+        "engagement": 1282000
+      },
+      "jewelrybox": {
+        "followers": 36000,
+        "engagement": 319000
+      }
+    },
+    "xhs": {
+      "faxuange": {
+        "followers": 27000,
+        "engagement": 37000
+      },
+      "hejiashu": {
+        "followers": 45000,
+        "engagement": 171000
+      },
+      "jewelrybox": {
+        "followers": 19000,
+        "engagement": 119000
+      }
+    },
+    "instagram": {
+      "faxuange": {
+        "followers": 83000,
+        "posts": 12
+      },
+      "hejiashu": {
+        "followers": 80000,
+        "posts": 13
+      },
+      "jewelrybox": {
+        "followers": 4074,
+        "posts": 10
+      }
+    }
+  },
+  "content": {
+    "douyin": {
+      "item01": {
+        "url": "https://www.douyin.com/video/7651140292226052590",
+        "likes": 390000,
+        "comments": null,
+        "favorites": null,
+        "shares": null,
+        "label": "好难教的徒儿"
+      },
+      "item02": {
+        "url": "https://www.douyin.com/video/7664238615464070510",
+        "likes": 236000,
+        "comments": null,
+        "favorites": null,
+        "shares": null,
+        "label": "#欧巴"
+      },
+      "item03": {
+        "url": "https://www.douyin.com/video/7667876245400742346",
+        "likes": 126000,
+        "comments": 5469,
+        "favorites": 5314,
+        "shares": 6942,
+        "label": "徒儿有进步！"
+      }
+    },
+    "weibo": {
+      "item01": {
+        "status_id": "5300746098835869",
+        "url": "https://weibo.com/1118449424/5300746098835869",
+        "likes": 11000,
+        "comments": 1234,
+        "reposts": 2902,
+        "label": "喜欢你"
+      },
+      "item02": {
+        "status_id": "5326791868944100",
+        "url": "https://weibo.com/8348577978/5326791868944100",
+        "likes": null,
+        "comments": null,
+        "reposts": null,
+        "label": "法嘉现实向背景短片"
+      },
+      "item03": {
+        "status_id": "5323195886345801",
+        "video_url": "https://weibo.com/tv/show/1034:5323193712312362?from=old_pc_videoshow",
+        "likes": null,
+        "comments": 1318,
+        "reposts": 847,
+        "label": "专属于小发夹的礼物🎁",
+        "url": "https://weibo.com/8344769962/5323195886345801"
+      }
+    }
+  },
+  "summary": {
+    "representativeDouyinLikes": 1150000,
+    "brandCooperations": 2
+  }
+}
