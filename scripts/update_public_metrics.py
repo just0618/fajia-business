@@ -122,47 +122,73 @@ def first_number(mapping: dict[str, Any], aliases: Iterable[str]) -> int | None:
 
 
 def recursively_find_stats(node: Any, wanted_id: str | None = None) -> dict[str, int]:
-    """Search arbitrary JSON for a statistics object, preferring wanted aweme/status id."""
-    best: dict[str, int] = {}
+    """Search JSON for metrics.
 
-    def walk(value: Any) -> None:
-        nonlocal best
+    When wanted_id is supplied, only return statistics that can be
+    associated with that exact video or status ID. This prevents metrics
+    from recommended or related content being assigned to the target item.
+    """
+    best: dict[str, int] = {}
+    exact_found = False
+
+    def walk(value: Any, inherited_id: str = "") -> None:
+        nonlocal best, exact_found
+
+        if exact_found:
+            return
+
         if isinstance(value, dict):
-            node_id = str(
+            own_id = str(
                 value.get("aweme_id")
                 or value.get("item_id")
-                or value.get("id")
+                or value.get("idstr")
                 or value.get("mid")
+                or value.get("id")
                 or ""
             )
+            node_id = own_id or inherited_id
+
             candidates: list[dict[str, Any]] = []
             for key in ("statistics", "stats", "stat", "status"):
                 child = value.get(key)
                 if isinstance(child, dict):
                     candidates.append(child)
+
             candidates.append(value)
 
             for candidate in candidates:
                 found: dict[str, int] = {}
+
                 for output_key, aliases in METRIC_ALIASES.items():
                     number = first_number(candidate, aliases)
                     if number is not None:
                         found[output_key] = number
+
                 if len(found) >= 3:
-                    if wanted_id and node_id == wanted_id:
+                    if wanted_id:
+                        if node_id == wanted_id:
+                            best = found
+                            exact_found = True
+                            return
+                    elif len(found) > len(best):
                         best = found
-                        return
-                    if len(found) > len(best):
-                        best = found
+
             for child in value.values():
-                if wanted_id and len(best) >= 3 and node_id == wanted_id:
+                walk(child, node_id)
+                if exact_found:
                     return
-                walk(child)
+
         elif isinstance(value, list):
             for child in value:
-                walk(child)
+                walk(child, inherited_id)
+                if exact_found:
+                    return
 
     walk(node)
+
+    if wanted_id and not exact_found:
+        return {}
+
     return best
 
 
