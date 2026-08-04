@@ -74,10 +74,10 @@
     "douyin": {
       "item01": {
         "url": "https://www.douyin.com/video/7651140292226052590",
-        "likes": 390000,
-        "comments": null,
-        "favorites": null,
-        "shares": null,
+        "likes": 580293,
+        "comments": 2868,
+        "favorites": 28821,
+        "shares": 54595,
         "label": "好难教的徒儿"
       },
       "item02": {
@@ -101,25 +101,25 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11000,
-        "comments": 1234,
+        "likes": 11009,
+        "comments": 1235,
         "reposts": 2902,
         "label": "喜欢你"
       },
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": null,
-        "comments": null,
-        "reposts": null,
+        "likes": 19943,
+        "comments": 3033,
+        "reposts": 4654,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
         "status_id": "5323195886345801",
         "video_url": "https://weibo.com/tv/show/1034:5323193712312362?from=old_pc_videoshow",
-        "likes": null,
-        "comments": 1318,
-        "reposts": 847,
+        "likes": 10631,
+        "comments": 1322,
+        "reposts": 848,
         "label": "专属于小发夹的礼物🎁",
         "url": "https://weibo.com/8344769962/5323195886345801"
       }
@@ -127,6 +127,9 @@
   },
   "summary": {
     "representativeDouyinLikes": 1150000,
-    "brandCooperations": 2
-  }
+    "brandCooperations": 2,
+    "artistFollowers3Platforms": 1090000,
+    "artistDouyinTotalLikes": 7584000
+  },
+  "last_attempt": "2026-08-04T17:34:02+00:00"
 }
