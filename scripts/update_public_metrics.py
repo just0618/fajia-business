@@ -122,74 +122,57 @@ def first_number(mapping: dict[str, Any], aliases: Iterable[str]) -> int | None:
 
 
 def recursively_find_stats(node: Any, wanted_id: str | None = None) -> dict[str, int]:
-    """Search JSON for metrics.
+    """Search arbitrary JSON for metrics belonging to the requested item.
 
-    When wanted_id is supplied, only return statistics that can be
-    associated with that exact video or status ID. This prevents metrics
-    from recommended or related content being assigned to the target item.
+    When ``wanted_id`` is supplied, unrelated items are never used as a fallback.
+    This avoids a feed/detail response assigning another video's metrics to the
+    current card. If the exact item cannot be verified, the caller keeps the
+    previous stored values instead of writing potentially incorrect numbers.
     """
-    best: dict[str, int] = {}
-    exact_found = False
+    best_unscoped: dict[str, int] = {}
+    exact: dict[str, int] = {}
 
-    def walk(value: Any, inherited_id: str = "") -> None:
-        nonlocal best, exact_found
+    def metrics_from(mapping: dict[str, Any]) -> dict[str, int]:
+        found: dict[str, int] = {}
+        for output_key, aliases in METRIC_ALIASES.items():
+            number = first_number(mapping, aliases)
+            if number is not None:
+                found[output_key] = number
+        return found
 
-        if exact_found:
-            return
-
+    def walk(value: Any, inside_exact_item: bool = False) -> None:
+        nonlocal best_unscoped, exact
         if isinstance(value, dict):
-            own_id = str(
-                value.get("aweme_id")
-                or value.get("item_id")
-                or value.get("idstr")
-                or value.get("mid")
-                or value.get("id")
-                or ""
-            )
-            node_id = own_id or inherited_id
+            identifiers = {
+                str(value.get(key))
+                for key in ("aweme_id", "item_id", "id", "mid")
+                if value.get(key) is not None
+            }
+            is_exact_item = inside_exact_item or bool(wanted_id and wanted_id in identifiers)
 
             candidates: list[dict[str, Any]] = []
             for key in ("statistics", "stats", "stat", "status"):
                 child = value.get(key)
                 if isinstance(child, dict):
                     candidates.append(child)
-
             candidates.append(value)
 
             for candidate in candidates:
-                found: dict[str, int] = {}
-
-                for output_key, aliases in METRIC_ALIASES.items():
-                    number = first_number(candidate, aliases)
-                    if number is not None:
-                        found[output_key] = number
-
+                found = metrics_from(candidate)
                 if len(found) >= 3:
-                    if wanted_id:
-                        if node_id == wanted_id:
-                            best = found
-                            exact_found = True
-                            return
-                    elif len(found) > len(best):
-                        best = found
+                    if is_exact_item and len(found) > len(exact):
+                        exact = found
+                    elif wanted_id is None and len(found) > len(best_unscoped):
+                        best_unscoped = found
 
             for child in value.values():
-                walk(child, node_id)
-                if exact_found:
-                    return
-
+                walk(child, is_exact_item)
         elif isinstance(value, list):
             for child in value:
-                walk(child, inherited_id)
-                if exact_found:
-                    return
+                walk(child, inside_exact_item)
 
     walk(node)
-
-    if wanted_id and not exact_found:
-        return {}
-
-    return best
+    return exact if wanted_id else best_unscoped
 
 
 def update_weibo_profile(uid: str, target: dict[str, Any]) -> bool:

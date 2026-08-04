@@ -23,6 +23,20 @@ def main() -> None:
         }
     }
     assert recursively_find_stats(payload, "7667876245400742346")["shares"] == 6942
+    mixed_payload = {
+        "aweme_list": [
+            {
+                "aweme_id": "7651140292226052590",
+                "statistics": {
+                    "digg_count": 580293,
+                    "comment_count": 2868,
+                    "collect_count": 28821,
+                    "share_count": 54595,
+                },
+            }
+        ]
+    }
+    assert recursively_find_stats(mixed_payload, "7664238615464070510") == {}
     print("parser tests passed")
 
 

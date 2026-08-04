@@ -298,3 +298,39 @@
   #events .event-photo-grid{gap:3mm}
   #events .event-photo-grid img{aspect-ratio:16/9}
 }
+
+/* ===== V0.15 detail refinements ===== */
+.engagement-icon{display:block;width:18px;height:18px;object-fit:contain;opacity:.58;flex:0 0 auto}
+.engagement-icon--comment{filter:none}
+.brand-copy-link{color:var(--pink-deep);font-weight:700;border-bottom:1px solid rgba(216,95,122,.35);padding-bottom:1px}
+.brand-copy-link:hover{color:#a9425d;border-bottom-color:currentColor}
+.v-feature-card--image-first{padding:0;overflow:hidden}
+.v-editorial-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;background:#171310}
+.v-editorial-gallery figure{margin:0;min-width:0;background:#171310;border-right:1px solid rgba(255,255,255,.18)}
+.v-editorial-gallery figure:last-child{border-right:0}
+.v-editorial-gallery img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;object-position:center top}
+.v-feature-copy--below{padding:28px 30px 30px;border-top:1px solid var(--line);background:rgba(255,255,255,.88)}
+.v-feature-copy--below p:last-child{margin-bottom:0}
+.mini-placeholder-card--arena{justify-content:flex-start;gap:22px}
+.mini-placeholder-card--arena b{font-size:28px;letter-spacing:.08em;line-height:1.15}
+.material-actions{align-items:center}
+@media (max-width:980px){
+  .v-editorial-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v-editorial-gallery figure:nth-child(2){border-right:0}
+  .v-editorial-gallery figure:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.18)}
+}
+@media (max-width:600px){
+  .v-feature-copy--below{padding:22px 20px 24px}
+  .mini-placeholder-card--arena b{font-size:22px}
+}
+@media print{
+  .v-editorial-gallery{grid-template-columns:repeat(2,1fr)}
+  .v-editorial-gallery img{aspect-ratio:3/4}
+  .v-feature-copy--below{padding:5mm}
+  .engagement-icon{width:4mm;height:4mm}
+}
+@media print{
+  .v-editorial-gallery{grid-template-columns:repeat(4,1fr)!important;background:transparent!important}
+  .v-editorial-gallery figure{border-right:1px solid rgba(255,255,255,.18);background:#171310}
+  .v-editorial-gallery figure:nth-child(-n+2){border-bottom:0!important}
+}

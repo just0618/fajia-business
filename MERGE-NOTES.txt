@@ -1,0 +1,10 @@
+法嘉致富双人商业合作手册网站 V0.16（融合版）
+
+本包以 V0.15 的完整页面、图片、视频与 PDF 为主体，融合当前 GitHub 测试版的数据更新结构：
+- assets/social-data.json：采用当前仓库已抓取的公开数据与作品映射；
+- script.js：页面加载时自动读取并展示动态数据；
+- scripts/update_public_metrics.py：保留两层抓取，并增加“只接受目标作品 ID”保护，避免不同抖音作品数据串位；
+- .github/workflows/update-public-metrics.yml：采用已修复的工作流，移除 pip cache 配置；
+- PDF 仍为 V0.15 成品，网页版本标记为 V0.16。
+
+当前抖音前两条作品仍只有点赞数；评论、收藏、分享继续保留为空，不会伪造或用其他视频数据补齐。
