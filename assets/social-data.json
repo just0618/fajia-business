@@ -109,8 +109,8 @@
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 19943,
-        "comments": 3033,
+        "likes": 19949,
+        "comments": 3032,
         "reposts": 4654,
         "label": "法嘉现实向背景短片"
       },
@@ -131,5 +131,5 @@
     "artistFollowers3Platforms": 1090000,
     "artistDouyinTotalLikes": 7584000
   },
-  "last_attempt": "2026-08-04T17:34:02+00:00"
+  "last_attempt": "2026-08-04T18:00:39+00:00"
 }
