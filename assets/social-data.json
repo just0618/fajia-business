@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-06",
+  "updated": "2026-08-05",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -57,16 +57,13 @@
     },
     "instagram": {
       "faxuange": {
-        "followers": 84000,
-        "posts": 12
+        "followers": 84000
       },
       "hejiashu": {
-        "followers": 80000,
-        "posts": 13
+        "followers": 80000
       },
       "jewelrybox": {
-        "followers": 4079,
-        "posts": 10
+        "followers": 4079
       }
     }
   },
@@ -131,5 +128,5 @@
     "artistFollowers3Platforms": 1090000,
     "artistDouyinTotalLikes": 7584000
   },
-  "last_attempt": "2026-08-06T01:43:05+08:00"
+  "last_attempt": "2026-08-05T23:46:22+08:00"
 }

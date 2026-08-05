@@ -815,3 +815,27 @@
   .weibo-post-link{right:10px;top:14px}
   .brand-gallery .brand-video video{height:auto;aspect-ratio:16/9;min-height:0}
 }
+
+/* V0.25 mobile heading alignment */
+@media (max-width:600px){
+  #works .section-head--compact,
+  #fashion .section-head--compact{
+    width:100%;
+    align-items:flex-start;
+    justify-content:flex-start;
+    text-align:left;
+  }
+  #works .section-head--compact>div,
+  #fashion .section-head--compact>div{
+    width:100%;
+    text-align:left;
+  }
+  #works .section-head--compact .eyebrow,
+  #works .section-head--compact h2,
+  #fashion .section-head--compact .eyebrow,
+  #fashion .section-head--compact h2{
+    text-align:left;
+    margin-left:0;
+    margin-right:0;
+  }
+}
