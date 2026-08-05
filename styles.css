@@ -724,3 +724,94 @@
   .weibo-static-card{min-height:100mm;break-inside:avoid}
   .weibo-card-actions{display:none}
 }
+
+/* ===== V0.24 left-side compact player, aligned links and brand cards ===== */
+/* Keep social-content links only as wide as their text, even inside flex cards. */
+.embedded-video-card .video-card-copy>a{
+  align-self:flex-start;
+  width:max-content;
+  max-width:100%;
+}
+
+/* Small, draggable BGM dock on the left on both desktop and mobile. */
+.music-player{
+  left:8px!important;
+  right:auto!important;
+  top:46%;
+  width:min(194px,calc(100vw - 42px));
+}
+.music-player.has-custom-position{right:auto!important;bottom:auto}
+.music-dock-handle{
+  left:auto;
+  right:-20px;
+  width:21px;
+  height:38px;
+  border:1px solid rgba(216,95,122,.26);
+  border-left:0;
+  border-radius:0 12px 12px 0;
+  box-shadow:5px 6px 16px rgba(74,44,36,.07);
+  font-size:14px;
+}
+.music-toggle{
+  min-height:44px;
+  grid-template-columns:29px 1fr 20px;
+  gap:6px;
+  padding:5px 7px;
+  border-radius:0 11px 11px 0;
+}
+.music-icon{width:29px;height:29px;font-size:14px}
+.music-copy b{font-size:11px}
+.music-copy small{font-size:8px}
+.music-action{font-size:13px}
+.music-player.is-collapsed{width:36px}
+.music-player.is-collapsed .music-toggle{
+  min-height:36px;
+  padding:4px;
+  border-radius:0 10px 10px 0;
+}
+.music-player.is-collapsed .music-icon{width:28px;height:28px;font-size:13px}
+
+/* Weibo cards now use a light header link instead of the former black footer strip. */
+.weibo-post-head{position:relative;padding-right:66px}
+.weibo-post-link{
+  position:absolute;
+  right:12px;
+  top:15px;
+  color:#e05a76!important;
+  border-bottom:1px solid #ef9bad!important;
+  font-size:10px!important;
+  line-height:1.4;
+  white-space:nowrap;
+}
+.weibo-static-card>footer{display:none!important}
+
+/* Make AFU's video column fill the same grid-row height as the image and Weibo card. */
+.brand-gallery .brand-video{height:100%;min-height:0}
+.brand-gallery .brand-video video{
+  flex:1 1 auto;
+  width:100%;
+  height:100%;
+  min-height:0;
+  aspect-ratio:auto;
+  object-fit:contain;
+  background:#16120f;
+}
+
+@media (max-width:700px){
+  .music-player{
+    left:5px!important;
+    right:auto!important;
+    top:auto;
+    bottom:84px;
+    width:min(178px,calc(100vw - 36px));
+  }
+  .music-toggle{min-height:40px;grid-template-columns:27px 1fr 18px;padding:4px 6px}
+  .music-icon{width:27px;height:27px;font-size:13px}
+  .music-player.is-collapsed{width:34px}
+  .music-player.is-collapsed .music-toggle{min-height:34px;padding:4px}
+  .music-player.is-collapsed .music-icon{width:26px;height:26px;font-size:12px}
+  .music-dock-handle{left:auto;right:-19px;width:20px;height:36px}
+  .weibo-post-head{padding-right:62px}
+  .weibo-post-link{right:10px;top:14px}
+  .brand-gallery .brand-video video{height:auto;aspect-ratio:16/9;min-height:0}
+}

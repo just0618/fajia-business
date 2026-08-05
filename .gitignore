@@ -1,0 +1,5 @@
+debug-social/
+*.bak.*
+render-*.html
+render-*.png
+desktop-check.png

@@ -54,7 +54,7 @@ function computeSummary(data){
 }
 async function hydrateSocialData(){
   try{
-    const res=await fetch('assets/social-data.json',{cache:'no-store'});
+    const res=await fetch(`assets/social-data.json?v=${Date.now()}`,{cache:'no-store'});
     if(!res.ok)return;
     const data=computeSummary(await res.json());
     document.querySelectorAll('[data-social-path],[data-metric-path],[data-summary-path]').forEach(el=>{
@@ -71,7 +71,7 @@ async function hydrateSocialData(){
 }
 hydrateSocialData();
 
-// V0.23: compact, draggable, collapsible background music player.
+// V0.24: compact left-side, draggable, collapsible background music player.
 (() => {
   const player = document.getElementById('musicPlayer');
   const audio = document.getElementById('siteBgm');
@@ -92,12 +92,10 @@ hydrateSocialData();
   let startLeft = 0;
   let startTop = 0;
 
-  const positionKey = 'fajiaMusicPositionV23';
-  const collapsedKey = 'fajiaMusicCollapsed';
+  const positionKey = 'fajiaMusicPositionV24';
+  const collapsedKey = 'fajiaMusicCollapsedV24';
   const storedCollapsed = localStorage.getItem(collapsedKey);
-  const shouldCollapse = storedCollapsed === null
-    ? window.matchMedia('(max-width: 700px)').matches
-    : storedCollapsed === 'true';
+  const shouldCollapse = storedCollapsed === null ? true : storedCollapsed === 'true';
 
   const clamp = (value, min, max) => Math.min(Math.max(value, min), Math.max(min, max));
 
@@ -137,7 +135,7 @@ hydrateSocialData();
     player.classList.toggle('is-collapsed', collapsed);
     handle.setAttribute('aria-expanded', String(!collapsed));
     handle.setAttribute('aria-label', collapsed ? '拖动或展开侧边音乐播放器' : '拖动或收起侧边音乐播放器');
-    handle.querySelector('span').textContent = collapsed ? '‹' : '›';
+    handle.querySelector('span').textContent = collapsed ? '›' : '‹';
     localStorage.setItem(collapsedKey, String(collapsed));
     requestAnimationFrame(keepInsideViewport);
   };

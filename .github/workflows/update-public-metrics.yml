@@ -9,8 +9,7 @@ on:
         default: "true"
 
   schedule:
-    - cron: "20 12 * * *"
-      timezone: "Asia/Shanghai"
+    - cron: "20 4 * * *" # daily, 12:20 Beijing time
 permissions:
   contents: write
 jobs:
