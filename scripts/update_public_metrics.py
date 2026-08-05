@@ -145,7 +145,7 @@ def recursively_find_stats(node: Any, wanted_id: str | None = None) -> dict[str,
         if isinstance(value, dict):
             identifiers = {
                 str(value.get(key))
-                for key in ("aweme_id", "item_id", "id", "mid")
+                for key in ("aweme_id", "item_id", "note_id", "id", "mid")
                 if value.get(key) is not None
             }
             is_exact_item = inside_exact_item or bool(wanted_id and wanted_id in identifiers)
@@ -316,7 +316,7 @@ def browser_collect(
                 if "json" not in content_type:
                     return
                 lower_url = response.url.lower()
-                if not any(word in lower_url for word in ("aweme", "item", "detail", "feed")):
+                if not any(word in lower_url for word in ("aweme", "item", "detail", "feed", "note", "post")):
                     return
                 try:
                     payload = response.json()
@@ -384,6 +384,31 @@ def browser_collect(
                         row = extract_four_metric_row(sibling_texts)
                         if row:
                             captured.update(row)
+
+                if len(captured) < 3 and "/note/" in page_url:
+                    # Douyin image-note pages use a different right-side interaction rail.
+                    # Its hashed prefix changes, but the semantic class suffix has remained
+                    # relatively stable. Read the four visible counters in display order:
+                    # like, comment, favorite, share.
+                    note_panel_selectors = (
+                        '[class*="interaction-area-positionBox"]',
+                        '[class*="interaction-area"][class*="positionBox"]',
+                        '[class*="note-detail-container"] [class*="positionBox"]',
+                    )
+                    for selector in note_panel_selectors:
+                        panel = page.locator(selector).first
+                        if not panel.count():
+                            continue
+                        try:
+                            panel_texts = panel.locator("span").all_inner_texts()
+                            if len(panel_texts) < 4:
+                                panel_texts = [panel.inner_text()]
+                            row = extract_four_metric_row(panel_texts)
+                            if row:
+                                captured.update(row)
+                                break
+                        except Exception:
+                            continue
 
                 changed = False
                 for key in ("likes", "comments", "favorites", "shares"):
