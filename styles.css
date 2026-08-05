@@ -439,3 +439,44 @@
     font-size:22px!important;
   }
 }
+
+
+/* ===== V0.21 stable visual refinements ===== */
+/* Give the opening quotes a deliberate blank line below the archive title. */
+.hero-quotes{margin-top:30px}
+
+/* Keep all three Weibo cards aligned even when their titles have different lengths. */
+.embedded-video-grid--landscape .embedded-video-card{display:flex;flex-direction:column}
+.embedded-video-grid--landscape .video-card-copy{display:flex;flex:1;flex-direction:column}
+.embedded-video-grid--landscape .video-card-copy h4{min-height:64px;margin-bottom:9px}
+.embedded-video-grid--landscape .video-card-copy .engagement-row{margin-top:auto}
+
+/* UPCOMING stays at the left; the ARENA announcement is centered in the whole card. */
+.mini-placeholder-card--arena{position:relative!important;display:flex!important;min-height:108px;padding:22px 26px!important;justify-content:flex-start!important;align-items:center!important;text-align:left!important}
+.mini-placeholder-card--arena .arena-kicker{position:relative;z-index:2;flex:0 0 auto;text-align:left!important}
+.mini-placeholder-card--arena .arena-message{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:baseline;gap:.34em;white-space:nowrap;color:#2a2019}
+.mini-placeholder-card--arena .arena-message strong{font-family:Georgia,STSong,serif;font-size:31px;line-height:1;font-weight:700;letter-spacing:.06em}
+.mini-placeholder-card--arena .arena-message span{font-family:Georgia,STSong,serif;font-size:21px;line-height:1;font-weight:400;letter-spacing:.055em;color:#2a2019;text-align:left!important}
+
+/* Centre the contact heading and legal note as one coherent block. */
+.cta .wrap{display:flex;flex-direction:column;align-items:center;text-align:center}
+.cta .wrap>.eyebrow,.cta .wrap>h2,.cta .wrap>p,.cta .wrap>small{width:100%;text-align:center}
+.cta .wrap>p:not(.eyebrow){max-width:1080px;margin-left:auto;margin-right:auto}
+.materials-notice{line-height:1.95!important}
+
+@media (max-width:700px){
+  .hero-quotes{margin-top:22px}
+  .embedded-video-grid--landscape .video-card-copy h4{min-height:0}
+  .mini-placeholder-card--arena{min-height:124px;align-items:flex-start!important;flex-direction:column!important;gap:18px!important}
+  .mini-placeholder-card--arena .arena-message{position:static;transform:none;margin:0 auto;white-space:normal;justify-content:center;text-align:center}
+  .mini-placeholder-card--arena .arena-message strong{font-size:28px}
+  .mini-placeholder-card--arena .arena-message span{font-size:18px;text-align:center!important}
+}
+
+@media print{
+  .hero-quotes{margin-top:7mm}
+  .embedded-video-grid--landscape .video-card-copy h4{min-height:17mm}
+  .mini-placeholder-card--arena .arena-message strong{font-size:20pt}
+  .mini-placeholder-card--arena .arena-message span{font-size:13pt}
+  .cta .wrap>p:not(.eyebrow){max-width:100%}
+}

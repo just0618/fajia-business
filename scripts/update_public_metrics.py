@@ -335,19 +335,6 @@ def browser_collect(
                     timeout=60_000,
                 )
                 page.wait_for_timeout(8_000)
-
-                # Douyin note / 动图页面的互动栏可能比主体内容更晚渲染。
-                if "/note/" in page_url:
-                    try:
-                        page.locator(
-                            'main[data-e2e="note-detail"] [data-e2e="video-player-digg"]'
-                        ).first.wait_for(
-                            state="attached",
-                            timeout=15_000,
-                        )
-                    except PlaywrightTimeoutError:
-                        pass
-
                 body_text = page.locator("body").inner_text(timeout=10_000)
                 blocked_words = ("验证码", "安全验证", "登录后", "扫码登录", "访问频繁")
                 blocked = any(word in body_text for word in blocked_words)
@@ -357,36 +344,20 @@ def browser_collect(
                     # overlay is present: the public metric row often remains in the DOM.
                     selector_map = {
                         "likes": [
-                            # Douyin note / 动图作品页面
-                            'main[data-e2e="note-detail"] [data-e2e="video-player-digg"]',
-
-                            # 普通视频页面
                             '[data-e2e="video-digg-count"]',
                             '[data-e2e="video-like-count"]',
                             '[data-e2e="video-digg"]',
                         ],
                         "comments": [
-                            # Douyin note / 动图作品页面
-                            'main[data-e2e="note-detail"] [data-e2e="feed-comment-icon"]',
-
-                            # 普通视频页面
                             '[data-e2e="video-comment-count"]',
                             '[data-e2e="video-comment"]',
                         ],
                         "favorites": [
-                            # Douyin note / 动图作品页面
-                            'main[data-e2e="note-detail"] [data-e2e="video-player-collect"]',
-
-                            # 普通视频页面
                             '[data-e2e="video-collect-count"]',
                             '[data-e2e="video-favorite-count"]',
                             '[data-e2e="video-collect"]',
                         ],
                         "shares": [
-                            # Douyin note / 动图作品页面
-                            'main[data-e2e="note-detail"] [data-e2e="video-player-share"]',
-
-                            # 普通视频页面
                             '[data-e2e="video-share-count"]',
                             '[data-e2e="video-share"]',
                         ],
