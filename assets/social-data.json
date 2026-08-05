@@ -89,19 +89,19 @@
         "label": "#欧巴"
       },
       "item03": {
-        "url": "https://www.douyin.com/video/7667876245400742346",
-        "likes": 127305,
-        "comments": 5517,
-        "favorites": 5386,
-        "shares": 7024,
-        "label": "徒儿有进步！"
+        "url": "https://www.douyin.com/note/7670451363546191754",
+        "likes": null,
+        "comments": null,
+        "favorites": null,
+        "shares": null,
+        "label": "还能遇见你"
       }
     },
     "weibo": {
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11015,
+        "likes": 11019,
         "comments": 1235,
         "reposts": 2903,
         "label": "喜欢你"
@@ -109,15 +109,15 @@
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 20035,
-        "comments": 3041,
-        "reposts": 4657,
+        "likes": 20161,
+        "comments": 3054,
+        "reposts": 4656,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
         "status_id": "5323195886345801",
         "video_url": "https://weibo.com/tv/show/1034:5323193712312362?from=old_pc_videoshow",
-        "likes": 10640,
+        "likes": 10657,
         "comments": 1323,
         "reposts": 848,
         "label": "专属于小发夹的礼物🎁",
@@ -131,5 +131,5 @@
     "artistFollowers3Platforms": 1090000,
     "artistDouyinTotalLikes": 7584000
   },
-  "last_attempt": "2026-08-05T12:31:57+08:00"
+  "last_attempt": "2026-08-05T10:16:40+00:00"
 }
