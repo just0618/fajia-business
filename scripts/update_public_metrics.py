@@ -205,12 +205,12 @@ def update_weibo_status_requests(status_id: str, target: dict[str, Any]) -> bool
 
 
 def resolve_douyin_item_id(url: str) -> str | None:
-    direct = re.search(r"/video/(\d+)", url)
+    direct = re.search(r"/(?:video|note)/(\d+)", url)
     if direct:
         return direct.group(1)
     try:
         response = SESSION.get(url, timeout=25, allow_redirects=True)
-        direct = re.search(r"/video/(\d+)", response.url)
+        direct = re.search(r"/(?:video|note)/(\d+)", response.url)
         if direct:
             return direct.group(1)
         direct = re.search(r'"aweme_id"\s*:\s*"?(\d+)"?', response.text)
@@ -328,8 +328,9 @@ def browser_collect(
 
             page.on("response", on_response)
             try:
+                page_url = url if re.search(r"douyin\.com/(?:video|note)/\d+", url) else f"https://www.douyin.com/video/{item_id}"
                 page.goto(
-                    f"https://www.douyin.com/video/{item_id}",
+                    page_url,
                     wait_until="domcontentloaded",
                     timeout=60_000,
                 )
@@ -338,8 +339,9 @@ def browser_collect(
                 blocked_words = ("验证码", "安全验证", "登录后", "扫码登录", "访问频繁")
                 blocked = any(word in body_text for word in blocked_words)
 
-                if not captured and not blocked:
-                    # First try plausible stable data-e2e counters.
+                if not captured:
+                    # First try plausible stable data-e2e counters, even when a login
+                    # overlay is present: the public metric row often remains in the DOM.
                     selector_map = {
                         "likes": [
                             '[data-e2e="video-digg-count"]',
@@ -369,48 +371,17 @@ def browser_collect(
                                     captured[key] = number
                                     break
 
-                if len(captured) < 4 and not blocked:
-                    # 抖音当前页面实际使用的是 detail-video-info，
-                    # 不能写成 video-detail-info。
+                if len(captured) < 3:
+                    # Screenshot supplied by the user shows this stable anchor inside
+                    # data-e2e="video-detail-info". The surrounding class is hashed,
+                    # so we deliberately avoid relying on it.
                     share_anchor = page.locator(
-                        '[data-e2e="detail-video-info"] '
-                        '[data-e2e="video-share-icon-container"]:visible'
+                        '[data-e2e="video-detail-info"] [data-e2e="video-share-icon-container"]'
                     ).first
-
-                    try:
-                        share_anchor.wait_for(
-                            state="visible",
-                            timeout=15_000,
-                        )
-                    except PlaywrightTimeoutError:
-                        # 如果外层 data-e2e 再次调整，则直接寻找当前可见的分享按钮。
-                        share_anchor = page.locator(
-                            '[data-e2e="video-share-icon-container"]:visible'
-                        ).first
-                        share_anchor.wait_for(
-                            state="visible",
-                            timeout=10_000,
-                        )
-
-                    # 分享按钮是四项数据行的最后一个直接子元素，
-                    # 它的父元素就是：点赞、评论、收藏、分享。
-                    metric_row = share_anchor.locator("xpath=..").first
-                    sibling_texts = metric_row.locator(
-                        ":scope > *"
-                    ).all_inner_texts()
-
-                    row = extract_four_metric_row(sibling_texts)
-
-                    if row:
-                        # 保留网络请求中获得的精确值，
-                        # 只使用页面数据补齐缺失字段。
-                        for key, value in row.items():
-                            captured.setdefault(key, value)
-
-                        log(
-                            f"[douyin/dom] {item_id}: "
-                            f"texts={sibling_texts}, parsed={row}"
-                        )
+                    if share_anchor.count():
+                        parent = share_anchor.locator("xpath=..").first
+                        sibling_texts = parent.locator(":scope > *").all_inner_texts()
+                        row = extract_four_metric_row(sibling_texts)
                         if row:
                             captured.update(row)
 
@@ -604,6 +575,18 @@ def main() -> int:
 
     data = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     changed = False
+
+    # V0.20 content migration: the third Douyin card now points to a new note.
+    # Clear the former post's counters once, then let the normal browser collector
+    # repopulate the four metrics from the new public page.
+    item03 = data.setdefault("content", {}).setdefault("douyin", {}).setdefault("item03", {})
+    new_item03_url = "https://www.douyin.com/note/7670451363546191754"
+    if item03.get("url") != new_item03_url:
+        item03["url"] = new_item03_url
+        item03["label"] = "还能遇见你"
+        for metric_key in ("likes", "comments", "favorites", "shares"):
+            item03[metric_key] = None
+        changed = True
     sources = data.get("sources", {})
     platforms = data.get("platforms", {})
 

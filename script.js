@@ -1,3 +1,15 @@
+
+function renderTMinusOne(){
+  const date=new Date();
+  date.setHours(12,0,0,0);
+  date.setDate(date.getDate()-1);
+  const zh=`${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日`;
+  const dot=`${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')}`;
+  document.querySelectorAll('[data-tminus-one]').forEach(el=>{
+    el.textContent=el.closest?.('.preview-chip')?dot:zh;
+  });
+}
+renderTMinusOne();
 const menuBtn=document.querySelector('.menu-btn');
 const nav=document.querySelector('.main-nav');
 menuBtn?.addEventListener('click',()=>{const open=nav.classList.toggle('open');menuBtn.setAttribute('aria-expanded',String(open));});
@@ -47,11 +59,14 @@ async function hydrateSocialData(){
     const data=computeSummary(await res.json());
     document.querySelectorAll('[data-social-path],[data-metric-path],[data-summary-path]').forEach(el=>{
       const path=el.dataset.socialPath||el.dataset.metricPath||el.dataset.summaryPath;
-      const v=getPath(data,path);
+      let v=getPath(data,path);
+      // The third Douyin card changed from a video URL to a new note URL in V0.20.
+      // Do not show the former post's cached metrics while the scheduled scraper is
+      // still waiting to refresh social-data.json.
+      if(path.startsWith('content.douyin.item03.') && data.content?.douyin?.item03?.url!=='https://www.douyin.com/note/7670451363546191754')v=null;
       if(v!==undefined)el.textContent=displayValue(v,el);
     });
-    const note=document.getElementById('socialUpdated');
-    if(note&&data.updated){const [y,m,d]=data.updated.split('-'); note.textContent=`数据截至 ${y}年${Number(m)}月${Number(d)}日；粉丝数为平台公开数据，跨平台未去重。`;}
+    renderTMinusOne();
   }catch(_){/* file:// 预览时保留 HTML 内置数值 */}
 }
 hydrateSocialData();
