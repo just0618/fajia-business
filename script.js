@@ -55,3 +55,75 @@ async function hydrateSocialData(){
   }catch(_){/* file:// 预览时保留 HTML 内置数值 */}
 }
 hydrateSocialData();
+
+// V0.18: looped background music with autoplay fallback and a visible pause/play control.
+(() => {
+  const audio = document.getElementById('siteBgm');
+  const toggle = document.getElementById('musicToggle');
+  const state = document.getElementById('musicState');
+  const action = document.getElementById('musicAction');
+  if (!audio || !toggle || !state || !action) return;
+
+  audio.volume = 0.55;
+  let userPaused = false;
+  let autoplayBlocked = false;
+
+  const render = () => {
+    const playing = !audio.paused && !audio.ended;
+    toggle.classList.toggle('is-playing', playing);
+    toggle.setAttribute('aria-pressed', String(playing));
+    action.textContent = playing ? 'Ⅱ' : '▶';
+    state.textContent = playing
+      ? '循环播放中 · 点击暂停'
+      : (autoplayBlocked ? '浏览器已拦截自动播放 · 点击播放' : '已暂停 · 点击播放');
+  };
+
+  const tryPlay = async () => {
+    if (userPaused) return false;
+    try {
+      await audio.play();
+      autoplayBlocked = false;
+      render();
+      return true;
+    } catch (_) {
+      autoplayBlocked = true;
+      render();
+      return false;
+    }
+  };
+
+  toggle.addEventListener('click', async () => {
+    if (audio.paused) {
+      userPaused = false;
+      await tryPlay();
+    } else {
+      userPaused = true;
+      audio.pause();
+      render();
+    }
+  });
+
+  audio.addEventListener('play', render);
+  audio.addEventListener('pause', render);
+  audio.addEventListener('error', () => {
+    autoplayBlocked = true;
+    state.textContent = '音频加载失败，请检查文件路径';
+    action.textContent = '▶';
+  });
+
+  // Most mobile/desktop browsers block audible autoplay. The first ordinary tap
+  // on the page is therefore used as a compliant fallback, unless the user has paused it.
+  const unlockOnFirstInteraction = async (event) => {
+    if (event.target.closest?.('#musicToggle')) return;
+    if (audio.paused && !userPaused) await tryPlay();
+    if (!audio.paused) {
+      document.removeEventListener('pointerdown', unlockOnFirstInteraction);
+      document.removeEventListener('keydown', unlockOnFirstInteraction);
+    }
+  };
+  document.addEventListener('pointerdown', unlockOnFirstInteraction);
+  document.addEventListener('keydown', unlockOnFirstInteraction);
+
+  render();
+  tryPlay();
+})();
