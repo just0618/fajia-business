@@ -2,7 +2,7 @@
   "updated": "2026-08-06",
   "sources": {
     "douyin": {
-      "faxuange_profile": "https://v.douyin.com/a3h78uwRapI/",
+      "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
       "hejiashu_profile": "https://v.douyin.com/7BCq-sWFMkM/"
     },
     "weibo": {
@@ -11,7 +11,7 @@
       "jewelrybox_uid": "8344769962"
     },
     "xhs": {
-      "faxuange_profile": "https://xhslink.cn/m/1ToXOT02l1Q",
+      "faxuange_profile": "https://www.xiaohongshu.com/user/profile/634b3b25000000001802ce29",
       "hejiashu_profile": "https://xhslink.cn/m/2OgckKQ3yP4",
       "jewelrybox_profile": "https://xhslink.cn/m/2l1aZ5rdDgT"
     }
@@ -24,7 +24,7 @@
       },
       "hejiashu": {
         "followers": 330000,
-        "engagement": 5553000
+        "engagement": 5554000
       }
     },
     "weibo": {
@@ -43,16 +43,16 @@
     },
     "xhs": {
       "faxuange": {
-        "followers": 27000,
-        "engagement": 37000
+        "followers": 28000,
+        "engagement": 38000
       },
       "hejiashu": {
-        "followers": 45000,
-        "engagement": 171000
+        "followers": 46000,
+        "engagement": 177000
       },
       "jewelrybox": {
         "followers": 19000,
-        "engagement": 119000
+        "engagement": 120000
       }
     },
     "instagram": {
@@ -131,5 +131,5 @@
     "artistFollowers3Platforms": 1090000,
     "artistDouyinTotalLikes": 7584000
   },
-  "last_attempt": "2026-08-06T01:23:12+08:00"
+  "last_attempt": "2026-08-06T01:36:36+08:00"
 }
