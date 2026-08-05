@@ -9,7 +9,7 @@
 <link href="styles.css" rel="stylesheet"/>
 </head>
 <body>
-<div class="preview-chip">内部预览 V0.22 · 数据采集截至 <span data-tminus-one>2026.08.04</span></div>
+<div class="preview-chip">内部预览 V0.23 · 数据采集截至 <span data-tminus-one>2026.08.04</span></div>
 <header class="site-header">
 <a aria-label="返回首页" class="brand" href="#top"><span>FAJIA</span><b>法宣阁 × 贺嘉述</b></a>
 <button aria-controls="main-nav" aria-expanded="false" class="menu-btn">目录</button>
@@ -26,7 +26,7 @@
 </div>
 <div class="music-player" id="musicPlayer">
 <audio autoplay="" id="siteBgm" loop="" preload="auto"><source src="assets/music/little-hero.mp3" type="audio/mpeg"/>您的浏览器暂不支持音频播放。</audio>
-<button aria-label="收起侧边音乐播放器" aria-expanded="true" class="music-dock-handle" id="musicDockHandle" type="button"><span aria-hidden="true">›</span></button>
+<button aria-label="拖动或收起侧边音乐播放器" aria-expanded="true" class="music-dock-handle" title="拖动位置；轻点收起或展开" id="musicDockHandle" type="button"><span aria-hidden="true">›</span></button>
 <button aria-label="播放或暂停《小英雄》" aria-pressed="false" class="music-toggle" id="musicToggle" type="button"><span aria-hidden="true" class="music-icon">♫</span><span class="music-copy"><b>《小英雄》</b><small id="musicState">正在尝试自动播放</small></span><span aria-hidden="true" class="music-action" id="musicAction">Ⅱ</span></button>
 </div>
 </div>
@@ -159,39 +159,35 @@
 <div class="section-head"><div><p class="eyebrow warm">BUSINESS COOPERATION</p><h2>商务合作</h2></div></div>
 <div class="brand-projects">
 <article class="brand-project"><div class="brand-project-head"><div><p class="case-type">BEAUTY · SKINCARE</p><h3>AFU 阿芙</h3><span class="brand-role">双人品牌面膜大使</span></div></div><p>试探，缠绕，心照不宣的透亮——「宣」示美好，「述」说光采。</p><div class="brand-gallery"><figure><img alt="法嘉阿芙品牌面膜大使官宣主视觉" src="assets/afuposter.webp"/><figcaption>官方图片</figcaption></figure><figure class="brand-weibo-figure">
-<div class="weibo-smart-embed" data-weibo-smart>
-<div class="weibo-embed-toolbar"><span><i aria-hidden="true">●</i> 微博官宣</span><button data-weibo-switch type="button">尝试加载原微博</button></div>
-<div class="weibo-embed-stage">
-<iframe data-weibo-frame loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://m.weibo.cn/detail/5315447156377276" title="AFU阿芙品牌官宣微博"></iframe>
-<article class="weibo-fallback-card" data-weibo-fallback>
-<header><div class="weibo-brand-avatar">AFU</div><div><h4>AFU阿芙 <span aria-label="认证账号">V</span></h4><p>品牌官方微博 · 与 法宣阁阿、贺嘉述 共创</p></div></header>
+<article class="weibo-static-card">
+<header class="weibo-post-head">
+<div class="weibo-coauthor-avatars"><img alt="法宣阁阿微博头像" src="assets/avatar-faxuange-main.webp"/><span class="weibo-brand-avatar">AFU</span></div>
+<div class="weibo-author-copy"><h4>法宣阁阿 <span class="weibo-verified" aria-label="认证账号">V</span> <em>与</em> <strong>AFU阿芙</strong> <span class="weibo-muted">等 3 人的共创微博</span></h4><p>6-30 10:00</p></div>
+</header>
 <div class="weibo-card-body">
-<p>有些靠近，不止于距离。<br/>是肌肤在油的沁润下，重拾弹韧；在蜜的包裹中，透出光彩。<br/>是「宣」之于口的亮，遇见「述」之于心的润——<br/>很高兴成为 @AFU阿芙 品牌面膜大使。<br/>爱与光采，皆是双程。<br/>阿芙精油SPA面膜家族，双人成伴，养护成趣，奠定天然出众的年轻底色。</p>
-<p class="weibo-tags">#阿芙精油SPA面膜家族# #宣然相逢嘉期而至# #阿芙品牌面膜大使法宣阁贺嘉述#</p>
+<p>有些靠近，不止于距离。<br/>是肌肤在油的沁润下，重拾弹韧；在蜜的包裹中，透出光彩。<br/>是「宣」之于口的亮，遇见「述」之于心的润——<br/>很高兴成为 @AFU阿芙 品牌面膜大使。<br/>爱与光采，皆是双程。<br/>阿芙精油SPA面膜家族，双人成伴，养护成趣，奠定天然出众的年轻底色。<br/><a class="weibo-text-link" href="https://item.jd.com/100367752322.html?mark_id=999_reallog_mark_ad%3A999%7CWeiboADNatural" rel="noopener noreferrer" target="_blank">🔗 网页链接</a></p>
+<p class="weibo-tags">#阿芙精油SPA面膜家族# #宣然相逢嘉期而至# #阿芙品牌面膜大使法宣阁贺嘉述# #京东美妆#</p>
+<div class="weibo-card-media"><img alt="阿芙品牌面膜大使官宣配图" src="assets/afuposter.webp"/></div>
 </div>
-<footer><span>品牌官宣 · 发布时间以原微博为准</span><a href="https://weibo.com/8348577978/5315447156377276" rel="noopener noreferrer" target="_blank">打开原微博 ↗</a></footer>
+<div class="weibo-card-actions" aria-label="微博互动操作示意"><span>↻ 转发</span><span>◯ 评论</span><span>♡ 点赞</span></div>
+<footer><span>共创官宣微博</span><a href="https://weibo.com/8348577978/5315447156377276" rel="noopener noreferrer" target="_blank">查看原微博 ↗</a></footer>
 </article>
-</div>
-<p class="weibo-embed-status" data-weibo-status>正在检测微博页面是否允许嵌入；如受平台限制，将保留卡片展示。</p>
-</div>
 <figcaption>官宣微博</figcaption>
 </figure><figure class="brand-video"><video controls="" playsinline="" poster="assets/posters/afu-tvc.jpg" preload="metadata"><source src="assets/videos/afu-tvc.mp4" type="video/mp4"/>您的浏览器暂不支持视频播放。</video><img alt="阿芙品牌TVC封面" class="print-poster" src="assets/posters/afu-tvc.jpg"/><figcaption>官宣视频</figcaption></figure></div></article>
 <article class="brand-project"><div class="brand-project-head"><div><p class="case-type">BEAUTY · BASE MAKEUP</p><h3>FunnyElves 方里</h3><span class="brand-role">双人品牌挚友</span></div></div><p>贴贴有「法」，心动「嘉」倍，悄然靠近的贴贴，流淌无言的心动。</p><div class="brand-gallery"><figure><img alt="法嘉方里品牌挚友官宣主视觉" src="assets/funnyelvesposter.webp"/><figcaption>官方图片</figcaption></figure><figure class="brand-weibo-figure">
-<div class="weibo-smart-embed" data-weibo-smart>
-<div class="weibo-embed-toolbar"><span><i aria-hidden="true">●</i> 微博官宣</span><button data-weibo-switch type="button">尝试加载原微博</button></div>
-<div class="weibo-embed-stage">
-<iframe data-weibo-frame loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://m.weibo.cn/detail/5318346201104776" title="FunnyElves方里品牌官宣微博"></iframe>
-<article class="weibo-fallback-card" data-weibo-fallback>
-<header><div class="weibo-brand-avatar weibo-brand-avatar--funny">方里</div><div><h4>FunnyElves方里 <span aria-label="认证账号">V</span></h4><p>品牌官方微博 · 与 法宣阁阿、贺嘉述 共创</p></div></header>
+<article class="weibo-static-card">
+<header class="weibo-post-head">
+<div class="weibo-coauthor-avatars"><img alt="法宣阁阿微博头像" src="assets/avatar-faxuange-main.webp"/><span class="weibo-brand-avatar weibo-brand-avatar--funny">方里</span></div>
+<div class="weibo-author-copy"><h4>法宣阁阿 <span class="weibo-verified" aria-label="认证账号">V</span> <em>与</em> <strong>FunnyElves方里</strong> <span class="weibo-muted">的共创微博</span></h4><p>7-8 10:00</p></div>
+</header>
 <div class="weibo-card-body">
-<p>镜头内外，<br/>故事因热爱起笔，因生动持续加更。<br/><br/>很高兴和 @贺嘉述 携手，成为 @FunnyElves方里 品牌挚友，<br/>以奶润透光开启贴贴时刻，<br/>以柔焦清透定格心动妆态。<br/><br/>方里法嘉限定套组限定上线，和我们一起，感受每一次贴贴的心动时刻。</p>
-<p class="weibo-tags">#方里品牌挚友法宣阁贺嘉述# #贴贴有法心动嘉倍# #京东美妆#</p>
+<p>镜头内外，<br/>故事因热爱起笔，因生动持续加更。<br/><br/>很高兴和 @贺嘉述 携手，成为 @FunnyElves方里 品牌挚友，<br/>以奶润透光开启贴贴时刻，<br/>以柔焦清透定格心动妆态。<br/><br/>方里法嘉限定套组限定上线，GET <a class="weibo-text-link" href="https://item.jd.com/10227162407519.html?mark_id=followtopweibo" rel="noopener noreferrer" target="_blank">🔗 网页链接</a><br/>和我们一起，感受每一次贴贴的心动时刻。</p>
+<p class="weibo-tags">#方里品牌挚友法宣阁贺嘉述# #贴贴有法心动嘉倍# #京东美妆# #买美妆上京东#</p>
+<div class="weibo-card-media"><img alt="方里品牌挚友官宣配图" src="assets/funnyelvesposter.webp"/></div>
 </div>
-<footer><span>品牌官宣 · 发布时间以原微博为准</span><a href="https://weibo.com/1118449424/5318346201104776" rel="noopener noreferrer" target="_blank">打开原微博 ↗</a></footer>
+<div class="weibo-card-actions" aria-label="微博互动操作示意"><span>↻ 转发</span><span>◯ 评论</span><span>♡ 点赞</span></div>
+<footer><span>共创官宣微博</span><a href="https://weibo.com/1118449424/5318346201104776" rel="noopener noreferrer" target="_blank">查看原微博 ↗</a></footer>
 </article>
-</div>
-<p class="weibo-embed-status" data-weibo-status>正在检测微博页面是否允许嵌入；如受平台限制，将保留卡片展示。</p>
-</div>
 <figcaption>官宣微博</figcaption>
 </figure><figure><img alt="法嘉方里官方直播截图" src="assets/funnyelves-live1.webp"/><figcaption>官方直播</figcaption></figure></div></article>
 </div>

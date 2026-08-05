@@ -482,180 +482,245 @@
 }
 
 
-/* ===== V0.22 side floating BGM player ===== */
+
+/* ===== V0.23 compact draggable BGM player ===== */
 .music-player{
   position:fixed!important;
   z-index:1200;
-  right:16px;
-  top:52%;
-  transform:translateY(-50%);
+  right:10px;
+  top:48%;
   margin:0!important;
-  width:min(320px,calc(100vw - 52px));
+  width:min(228px,calc(100vw - 46px));
   max-width:none!important;
-  transition:transform .3s ease,filter .25s ease;
-  filter:drop-shadow(0 14px 30px rgba(54,34,27,.18));
+  filter:drop-shadow(0 10px 22px rgba(54,34,27,.16));
+  transition:width .22s ease,filter .2s ease;
+  touch-action:none;
 }
-.music-player.is-collapsed{transform:translate(calc(100% - 48px),-50%)}
+.music-player.has-custom-position{right:auto;bottom:auto}
+.music-player.is-dragging{filter:drop-shadow(0 16px 30px rgba(54,34,27,.24))}
 .music-player audio{display:none}
 .music-dock-handle{
   position:absolute;
-  left:-31px;
+  left:-24px;
   top:50%;
-  width:32px;
-  height:56px;
+  width:25px;
+  height:44px;
   transform:translateY(-50%);
-  border:1px solid rgba(216,95,122,.28);
+  border:1px solid rgba(216,95,122,.26);
   border-right:0;
-  border-radius:18px 0 0 18px;
-  background:rgba(255,250,247,.94);
+  border-radius:14px 0 0 14px;
+  background:rgba(255,250,247,.96);
   color:var(--pink-deep);
-  cursor:pointer;
-  box-shadow:-6px 8px 20px rgba(74,44,36,.08);
-  font:700 22px/1 Arial,sans-serif;
+  cursor:grab;
+  box-shadow:-5px 6px 16px rgba(74,44,36,.07);
+  font:700 17px/1 Arial,sans-serif;
+  touch-action:none;
+  user-select:none;
 }
+.music-player.is-dragging .music-dock-handle{cursor:grabbing}
 .music-toggle{
   width:100%;
-  min-height:64px;
+  min-height:52px;
   display:grid;
-  grid-template-columns:42px 1fr 32px;
+  grid-template-columns:34px 1fr 24px;
   align-items:center;
-  gap:11px;
-  padding:11px 14px;
-  border:1px solid rgba(216,95,122,.26);
-  border-radius:16px 0 0 16px;
+  gap:8px;
+  padding:7px 10px;
+  border:1px solid rgba(216,95,122,.23);
+  border-radius:13px 0 0 13px;
   background:rgba(255,255,255,.94);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
   color:var(--ink);
   font:inherit;
   text-align:left;
   cursor:pointer;
-  transition:border-color .2s,background .2s;
+  overflow:hidden;
 }
 .music-toggle:hover{border-color:var(--pink);background:#fff}
-.music-icon{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--pink),var(--gold));font-size:21px;color:#21180a}
-.music-copy{display:flex;flex-direction:column;line-height:1.35;min-width:0}
-.music-copy b{font-size:14px;font-weight:700}
-.music-copy small{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.music-action{font-family:Arial,sans-serif;font-size:19px;text-align:center;color:var(--pink-deep)}
-.music-toggle.is-playing .music-icon{animation:musicPulse 1.8s ease-in-out infinite}
-
-@media (max-width:700px){
-  .music-player{right:8px;top:auto;bottom:96px;transform:none;width:min(286px,calc(100vw - 42px))}
-  .music-player.is-collapsed{transform:translateX(calc(100% - 48px))}
-  .music-toggle{min-height:58px;padding:8px 11px;border-radius:14px 0 0 14px;grid-template-columns:38px 1fr 28px}
-  .music-icon{width:38px;height:38px}
-  .music-dock-handle{height:50px}
-}
-
-/* ===== V0.22 Weibo smart embed + high-fidelity fallback card ===== */
-.brand-weibo-figure{min-width:0}
-.weibo-smart-embed{display:flex;flex-direction:column;min-height:100%;background:#f4f4f5;color:#222}
-.weibo-embed-toolbar{
-  min-height:46px;
-  padding:9px 12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  background:#fff;
-  border-bottom:1px solid #ececef;
-  font-size:12px;
-}
-.weibo-embed-toolbar span{font-weight:700;color:#333}
-.weibo-embed-toolbar i{color:#e6162d;font-style:normal;margin-right:5px}
-.weibo-embed-toolbar button{
-  border:1px solid #efc6cc;
-  background:#fff;
-  color:#d95f7a;
-  border-radius:999px;
-  padding:5px 10px;
-  font:inherit;
-  cursor:pointer;
-}
-.weibo-embed-stage{position:relative;flex:1;min-height:520px;background:#f4f4f5;overflow:hidden}
-.weibo-embed-stage iframe{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  border:0;
-  background:#fff;
-  opacity:0;
-  visibility:hidden;
-  transition:opacity .25s ease;
-}
-.weibo-smart-embed.is-showing-frame .weibo-embed-stage iframe{opacity:1;visibility:visible}
-.weibo-smart-embed.is-showing-frame .weibo-fallback-card{opacity:0;visibility:hidden;pointer-events:none}
-.weibo-fallback-card{
-  position:absolute;
-  inset:12px;
-  display:flex;
-  flex-direction:column;
-  border-radius:12px;
-  background:#fff;
-  box-shadow:0 6px 22px rgba(0,0,0,.07);
-  overflow:hidden;
-  transition:opacity .2s ease;
-}
-.weibo-fallback-card header{
-  display:flex;
-  align-items:center;
-  gap:11px;
-  padding:16px 16px 12px;
-  border-bottom:1px solid #f0f0f2;
-}
-.weibo-brand-avatar{
-  width:44px;
-  height:44px;
-  flex:0 0 44px;
+.music-icon{
+  width:34px;
+  height:34px;
   border-radius:50%;
   display:grid;
   place-items:center;
-  background:linear-gradient(135deg,#f5df9f,#d5a85e);
-  color:#53360e;
-  font:700 13px/1 Georgia,serif;
+  background:linear-gradient(135deg,var(--pink),var(--gold));
+  font-size:17px;
+  color:#21180a;
+  flex:none;
 }
-.weibo-brand-avatar--funny{background:linear-gradient(135deg,#f5e5dc,#d6b19c);color:#432c22}
-.weibo-fallback-card h4{margin:0 0 4px;font-size:15px}
-.weibo-fallback-card h4 span{
+.music-copy{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.music-copy b{font-size:12px;font-weight:700;white-space:nowrap}
+.music-copy small{font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.music-action{font-family:Arial,sans-serif;font-size:15px;text-align:center;color:var(--pink-deep)}
+.music-toggle.is-playing .music-icon{animation:musicPulse 1.8s ease-in-out infinite}
+.music-player.is-collapsed{width:44px}
+.music-player.is-collapsed .music-toggle{
+  min-height:44px;
+  grid-template-columns:1fr;
+  gap:0;
+  padding:5px;
+  border-radius:12px 0 0 12px;
+}
+.music-player.is-collapsed .music-copy,
+.music-player.is-collapsed .music-action{display:none}
+.music-player.is-collapsed .music-icon{width:32px;height:32px;font-size:16px}
+
+@media (max-width:700px){
+  .music-player{
+    right:6px;
+    top:auto;
+    bottom:88px;
+    width:min(206px,calc(100vw - 40px));
+  }
+  .music-toggle{min-height:48px;grid-template-columns:32px 1fr 22px;padding:6px 8px}
+  .music-icon{width:32px;height:32px}
+  .music-player.is-collapsed{width:42px}
+  .music-player.is-collapsed .music-toggle{min-height:42px;padding:5px}
+  .music-player.is-collapsed .music-icon{width:30px;height:30px}
+  .music-dock-handle{left:-22px;width:23px;height:40px}
+}
+
+/* ===== V0.23 static high-fidelity Weibo cards ===== */
+.brand-weibo-figure{min-width:0}
+.weibo-static-card{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  min-height:520px;
+  background:#fff;
+  color:#222;
+  overflow:hidden;
+}
+.weibo-post-head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 14px 11px;
+  border-bottom:1px solid #ececef;
+}
+.weibo-coauthor-avatars{
+  position:relative;
+  display:flex;
+  align-items:center;
+  width:66px;
+  flex:0 0 66px;
+}
+.weibo-coauthor-avatars>img{
+  width:44px;
+  height:44px;
+  object-fit:cover;
+  border-radius:50%;
+  border:2px solid #fff;
+  position:relative;
+  z-index:2;
+}
+.weibo-brand-avatar{
+  width:36px;
+  height:36px;
+  margin-left:-14px;
+  border:2px solid #fff;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#f4e6af,#d3a954);
+  color:#56380f;
+  font:700 10px/1 Georgia,serif;
+  position:relative;
+  z-index:1;
+}
+.weibo-brand-avatar--funny{
+  background:#111;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+.weibo-author-copy{min-width:0}
+.weibo-author-copy h4{
+  margin:0 0 4px;
+  font-size:13px;
+  line-height:1.45;
+  font-weight:700;
+}
+.weibo-author-copy h4 em{font-style:normal;font-weight:400;color:#8b8b91}
+.weibo-author-copy h4 strong{font-weight:700}
+.weibo-muted{color:#999;font-weight:400}
+.weibo-verified{
   display:inline-grid;
   place-items:center;
-  width:16px;
-  height:16px;
+  width:15px;
+  height:15px;
   border-radius:50%;
-  background:#f59a23;
+  background:#1d9bf0;
   color:#fff;
-  font:700 10px/1 Arial,sans-serif;
+  font:700 9px/1 Arial,sans-serif;
   vertical-align:1px;
 }
-.weibo-fallback-card header p{margin:0;color:#939399;font-size:11px;line-height:1.5}
-.weibo-card-body{padding:15px 16px;overflow:auto;flex:1}
-.weibo-card-body>p{margin:0;color:#333;font-size:13px;line-height:1.78}
-.weibo-card-body .weibo-tags{margin-top:12px;color:#eb7350}
-.weibo-fallback-card footer{
-  padding:12px 16px;
-  border-top:1px solid #f0f0f2;
+.weibo-author-copy>p{margin:0;color:#aaa;font-size:10px}
+.weibo-card-body{
+  padding:14px;
+  overflow:auto;
+  flex:1;
+}
+.weibo-card-body>p{
+  margin:0;
+  color:#333;
+  font-size:12px;
+  line-height:1.75;
+}
+.weibo-card-body .weibo-tags{margin-top:12px;color:#2f65a7}
+.weibo-text-link{color:#2f65a7!important;border:0!important}
+.weibo-card-media{
+  margin-top:12px;
+  width:92px;
+  max-height:76px;
+  overflow:hidden;
+  border:1px solid #eee;
+  background:#f7f7f7;
+}
+.weibo-card-media img{
+  display:block;
+  width:100%;
+  height:76px;
+  object-fit:cover;
+  object-position:center top;
+}
+.weibo-card-actions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  border-top:1px solid #ececef;
+  border-bottom:1px solid #ececef;
+  color:#777;
+  font-size:10px;
+}
+.weibo-card-actions span{
+  padding:9px 4px;
+  text-align:center;
+}
+.weibo-card-actions span+span{border-left:1px solid #ececef}
+.weibo-static-card footer{
+  padding:10px 13px;
   display:flex;
   justify-content:space-between;
-  gap:12px;
   align-items:center;
+  gap:10px;
+  color:#aaa;
   font-size:10px;
-  color:#a1a1a6;
 }
-.weibo-fallback-card footer a{color:#e05a76;font-size:11px;border-bottom:1px solid #ef9bad}
-.weibo-embed-status{margin:0;padding:8px 12px;background:#fff;color:#8a8480;font-size:10px;line-height:1.5;border-top:1px solid #ececef}
+.weibo-static-card footer a{
+  color:#e05a76;
+  font-size:10px;
+  border-bottom:1px solid #ef9bad;
+}
 
 @media (max-width:980px){
-  .weibo-embed-stage{min-height:480px}
+  .weibo-static-card{min-height:490px}
 }
 @media (max-width:600px){
-  .weibo-embed-stage{min-height:500px}
-  .weibo-fallback-card{inset:10px}
+  .weibo-static-card{min-height:500px}
+  .weibo-card-body>p{font-size:13px}
 }
 @media print{
   .music-player{display:none!important}
-  .weibo-embed-toolbar,.weibo-embed-status,.weibo-embed-stage iframe{display:none!important}
-  .weibo-embed-stage{min-height:105mm;background:#fff}
-  .weibo-fallback-card{position:relative;inset:auto;min-height:100mm;box-shadow:none;border:1px solid var(--line)}
+  .weibo-static-card{min-height:100mm;break-inside:avoid}
+  .weibo-card-actions{display:none}
 }

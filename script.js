@@ -71,7 +71,7 @@ async function hydrateSocialData(){
 }
 hydrateSocialData();
 
-// V0.22: side-docked, collapsible background music player with autoplay fallback.
+// V0.23: compact, draggable, collapsible background music player.
 (() => {
   const player = document.getElementById('musicPlayer');
   const audio = document.getElementById('siteBgm');
@@ -81,21 +81,65 @@ hydrateSocialData();
   const handle = document.getElementById('musicDockHandle');
   if (!player || !audio || !toggle || !state || !action || !handle) return;
 
-  audio.volume = 0.55;
+  audio.volume = 0.5;
   let userPaused = false;
   let autoplayBlocked = false;
+  let dragging = false;
+  let moved = false;
+  let pointerId = null;
+  let startPointerX = 0;
+  let startPointerY = 0;
+  let startLeft = 0;
+  let startTop = 0;
 
-  const storedCollapsed = localStorage.getItem('fajiaMusicCollapsed');
+  const positionKey = 'fajiaMusicPositionV23';
+  const collapsedKey = 'fajiaMusicCollapsed';
+  const storedCollapsed = localStorage.getItem(collapsedKey);
   const shouldCollapse = storedCollapsed === null
     ? window.matchMedia('(max-width: 700px)').matches
     : storedCollapsed === 'true';
 
+  const clamp = (value, min, max) => Math.min(Math.max(value, min), Math.max(min, max));
+
+  const savePosition = () => {
+    const rect = player.getBoundingClientRect();
+    localStorage.setItem(positionKey, JSON.stringify({ left: rect.left, top: rect.top }));
+  };
+
+  const placeAt = (left, top) => {
+    const margin = 6;
+    const maxLeft = window.innerWidth - player.offsetWidth - margin;
+    const maxTop = window.innerHeight - player.offsetHeight - margin;
+    player.style.left = `${clamp(left, margin, maxLeft)}px`;
+    player.style.top = `${clamp(top, margin, maxTop)}px`;
+    player.style.right = 'auto';
+    player.style.bottom = 'auto';
+    player.classList.add('has-custom-position');
+  };
+
+  const restorePosition = () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(positionKey) || 'null');
+      if (saved && Number.isFinite(saved.left) && Number.isFinite(saved.top)) {
+        requestAnimationFrame(() => placeAt(saved.left, saved.top));
+      }
+    } catch (_) {}
+  };
+
+  const keepInsideViewport = () => {
+    if (!player.classList.contains('has-custom-position')) return;
+    const rect = player.getBoundingClientRect();
+    placeAt(rect.left, rect.top);
+    savePosition();
+  };
+
   const setCollapsed = (collapsed) => {
     player.classList.toggle('is-collapsed', collapsed);
     handle.setAttribute('aria-expanded', String(!collapsed));
-    handle.setAttribute('aria-label', collapsed ? '展开侧边音乐播放器' : '收起侧边音乐播放器');
+    handle.setAttribute('aria-label', collapsed ? '拖动或展开侧边音乐播放器' : '拖动或收起侧边音乐播放器');
     handle.querySelector('span').textContent = collapsed ? '‹' : '›';
-    localStorage.setItem('fajiaMusicCollapsed', String(collapsed));
+    localStorage.setItem(collapsedKey, String(collapsed));
+    requestAnimationFrame(keepInsideViewport);
   };
 
   const render = () => {
@@ -104,8 +148,8 @@ hydrateSocialData();
     toggle.setAttribute('aria-pressed', String(playing));
     action.textContent = playing ? 'Ⅱ' : '▶';
     state.textContent = playing
-      ? '循环播放中 · 点击暂停'
-      : (autoplayBlocked ? '浏览器已拦截自动播放 · 点击播放' : '已暂停 · 点击播放');
+      ? '循环播放中'
+      : (autoplayBlocked ? '点击播放' : '已暂停');
   };
 
   const tryPlay = async () => {
@@ -122,12 +166,48 @@ hydrateSocialData();
     }
   };
 
-  handle.addEventListener('click', () => {
-    setCollapsed(!player.classList.contains('is-collapsed'));
+  handle.addEventListener('pointerdown', (event) => {
+    if (event.button !== undefined && event.button !== 0) return;
+    const rect = player.getBoundingClientRect();
+    dragging = true;
+    moved = false;
+    pointerId = event.pointerId;
+    startPointerX = event.clientX;
+    startPointerY = event.clientY;
+    startLeft = rect.left;
+    startTop = rect.top;
+    handle.setPointerCapture?.(pointerId);
+    player.classList.add('is-dragging');
+    event.preventDefault();
   });
 
+  handle.addEventListener('pointermove', (event) => {
+    if (!dragging || event.pointerId !== pointerId) return;
+    const dx = event.clientX - startPointerX;
+    const dy = event.clientY - startPointerY;
+    if (Math.hypot(dx, dy) > 5) moved = true;
+    if (!moved) return;
+    placeAt(startLeft + dx, startTop + dy);
+    event.preventDefault();
+  });
+
+  const finishDrag = (event) => {
+    if (!dragging || (event.pointerId !== undefined && event.pointerId !== pointerId)) return;
+    dragging = false;
+    player.classList.remove('is-dragging');
+    try { handle.releasePointerCapture?.(pointerId); } catch (_) {}
+    pointerId = null;
+    if (moved) {
+      savePosition();
+    } else {
+      setCollapsed(!player.classList.contains('is-collapsed'));
+    }
+  };
+
+  handle.addEventListener('pointerup', finishDrag);
+  handle.addEventListener('pointercancel', finishDrag);
+
   toggle.addEventListener('click', async () => {
-    if (player.classList.contains('is-collapsed')) setCollapsed(false);
     if (audio.paused) {
       userPaused = false;
       await tryPlay();
@@ -142,7 +222,7 @@ hydrateSocialData();
   audio.addEventListener('pause', render);
   audio.addEventListener('error', () => {
     autoplayBlocked = true;
-    state.textContent = '音频加载失败，请检查文件路径';
+    state.textContent = '音频不可用';
     action.textContent = '▶';
   });
 
@@ -154,68 +234,13 @@ hydrateSocialData();
       document.removeEventListener('keydown', unlockOnFirstInteraction);
     }
   };
+
   document.addEventListener('pointerdown', unlockOnFirstInteraction);
   document.addEventListener('keydown', unlockOnFirstInteraction);
+  window.addEventListener('resize', keepInsideViewport);
 
   setCollapsed(shouldCollapse);
+  restorePosition();
   render();
   tryPlay();
 })();
-
-// V0.22: attempt the original Weibo page first, while keeping a reliable high-fidelity card fallback.
-document.querySelectorAll('[data-weibo-smart]').forEach((shell) => {
-  const frame = shell.querySelector('[data-weibo-frame]');
-  const fallback = shell.querySelector('[data-weibo-fallback]');
-  const switcher = shell.querySelector('[data-weibo-switch]');
-  const status = shell.querySelector('[data-weibo-status]');
-  if (!frame || !fallback || !switcher || !status) return;
-
-  let showingFrame = false;
-  let frameResponded = false;
-
-  const showFallback = (message = '微博限制了第三方嵌入，已切换为卡片展示。') => {
-    showingFrame = false;
-    shell.classList.remove('is-showing-frame');
-    frame.setAttribute('aria-hidden', 'true');
-    fallback.removeAttribute('aria-hidden');
-    switcher.textContent = '尝试加载原微博';
-    status.textContent = message;
-  };
-
-  const showFrame = () => {
-    showingFrame = true;
-    shell.classList.add('is-showing-frame');
-    frame.removeAttribute('aria-hidden');
-    fallback.setAttribute('aria-hidden', 'true');
-    switcher.textContent = '切换高仿卡片';
-    status.textContent = '已加载微博页面；如显示异常，可切换为卡片。';
-  };
-
-  const timeout = window.setTimeout(() => {
-    if (!frameResponded) showFallback();
-  }, 7000);
-
-  frame.addEventListener('load', () => {
-    frameResponded = true;
-    window.clearTimeout(timeout);
-    // Some platforms return a login/blocked page inside the frame. Keep a manual
-    // switch in the toolbar so the visitor can immediately return to the card.
-    window.setTimeout(showFrame, 450);
-  });
-
-  frame.addEventListener('error', () => {
-    frameResponded = false;
-    window.clearTimeout(timeout);
-    showFallback();
-  });
-
-  switcher.addEventListener('click', () => {
-    if (showingFrame) {
-      showFallback('已手动切换为卡片展示。');
-    } else {
-      showFrame();
-    }
-  });
-
-  showFallback('正在检测微博页面是否允许嵌入；检测期间先展示卡片。');
-});
