@@ -386,29 +386,62 @@ def browser_collect(
                             captured.update(row)
 
                 if len(captured) < 3 and "/note/" in page_url:
-                    # Douyin image-note pages use a different right-side interaction rail.
-                    # Its hashed prefix changes, but the semantic class suffix has remained
-                    # relatively stable. Read the four visible counters in display order:
-                    # like, comment, favorite, share.
-                    note_panel_selectors = (
-                        '[class*="interaction-area-positionBox"]',
-                        '[class*="interaction-area"][class*="positionBox"]',
-                        '[class*="note-detail-container"] [class*="positionBox"]',
-                    )
-                    for selector in note_panel_selectors:
-                        panel = page.locator(selector).first
-                        if not panel.count():
+                    # Douyin image-note pages expose the counters through semantic
+                    # data-e2e anchors, but the numeric text is stored in DIV elements,
+                    # not SPAN elements. Read each counter independently so hashed class
+                    # names and layout changes do not matter.
+                    try:
+                        page.locator('[data-e2e="video-player-digg"]').first.wait_for(
+                            state="attached", timeout=15_000
+                        )
+                    except Exception:
+                        pass
+
+                    note_metric_selectors = {
+                        "likes": '[data-e2e="video-player-digg"]',
+                        "comments": '[data-e2e="feed-comment-icon"]',
+                        "favorites": '[data-e2e="video-player-collect"]',
+                        "shares": '[data-e2e="video-player-share"]',
+                    }
+
+                    for key, selector in note_metric_selectors.items():
+                        locator = page.locator(selector).first
+                        if not locator.count():
                             continue
                         try:
-                            panel_texts = panel.locator("span").all_inner_texts()
-                            if len(panel_texts) < 4:
-                                panel_texts = [panel.inner_text()]
-                            row = extract_four_metric_row(panel_texts)
-                            if row:
-                                captured.update(row)
-                                break
+                            raw_text = locator.inner_text().strip()
                         except Exception:
                             continue
+
+                        # A semantic anchor may contain icon markup plus the visible
+                        # number. Extract the final human-readable counter token.
+                        tokens = re.findall(
+                            r"(?<!\\d)(\\d+(?:\\.\\d+)?(?:万|w|W|亿|k|K)?)(?!\\d)",
+                            raw_text,
+                        )
+                        for token in reversed(tokens):
+                            number = parse_human_number(token)
+                            if number is not None:
+                                captured[key] = number
+                                break
+
+                    # Last fallback: parse the whole interaction rail in display order.
+                    if len(captured) < 3:
+                        note_panel_selectors = (
+                            '[class*="interaction-area"][class*="positionBox"]',
+                            '[class*="note-detail-container"] [class*="positionBox"]',
+                        )
+                        for selector in note_panel_selectors:
+                            panel = page.locator(selector).first
+                            if not panel.count():
+                                continue
+                            try:
+                                row = extract_four_metric_row([panel.inner_text()])
+                                if row:
+                                    captured.update(row)
+                                    break
+                            except Exception:
+                                continue
 
                 changed = False
                 for key in ("likes", "comments", "favorites", "shares"):
