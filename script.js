@@ -71,17 +71,32 @@ async function hydrateSocialData(){
 }
 hydrateSocialData();
 
-// V0.18: looped background music with autoplay fallback and a visible pause/play control.
+// V0.22: side-docked, collapsible background music player with autoplay fallback.
 (() => {
+  const player = document.getElementById('musicPlayer');
   const audio = document.getElementById('siteBgm');
   const toggle = document.getElementById('musicToggle');
   const state = document.getElementById('musicState');
   const action = document.getElementById('musicAction');
-  if (!audio || !toggle || !state || !action) return;
+  const handle = document.getElementById('musicDockHandle');
+  if (!player || !audio || !toggle || !state || !action || !handle) return;
 
   audio.volume = 0.55;
   let userPaused = false;
   let autoplayBlocked = false;
+
+  const storedCollapsed = localStorage.getItem('fajiaMusicCollapsed');
+  const shouldCollapse = storedCollapsed === null
+    ? window.matchMedia('(max-width: 700px)').matches
+    : storedCollapsed === 'true';
+
+  const setCollapsed = (collapsed) => {
+    player.classList.toggle('is-collapsed', collapsed);
+    handle.setAttribute('aria-expanded', String(!collapsed));
+    handle.setAttribute('aria-label', collapsed ? '展开侧边音乐播放器' : '收起侧边音乐播放器');
+    handle.querySelector('span').textContent = collapsed ? '‹' : '›';
+    localStorage.setItem('fajiaMusicCollapsed', String(collapsed));
+  };
 
   const render = () => {
     const playing = !audio.paused && !audio.ended;
@@ -107,7 +122,12 @@ hydrateSocialData();
     }
   };
 
+  handle.addEventListener('click', () => {
+    setCollapsed(!player.classList.contains('is-collapsed'));
+  });
+
   toggle.addEventListener('click', async () => {
+    if (player.classList.contains('is-collapsed')) setCollapsed(false);
     if (audio.paused) {
       userPaused = false;
       await tryPlay();
@@ -126,10 +146,8 @@ hydrateSocialData();
     action.textContent = '▶';
   });
 
-  // Most mobile/desktop browsers block audible autoplay. The first ordinary tap
-  // on the page is therefore used as a compliant fallback, unless the user has paused it.
   const unlockOnFirstInteraction = async (event) => {
-    if (event.target.closest?.('#musicToggle')) return;
+    if (event.target.closest?.('#musicPlayer')) return;
     if (audio.paused && !userPaused) await tryPlay();
     if (!audio.paused) {
       document.removeEventListener('pointerdown', unlockOnFirstInteraction);
@@ -139,6 +157,65 @@ hydrateSocialData();
   document.addEventListener('pointerdown', unlockOnFirstInteraction);
   document.addEventListener('keydown', unlockOnFirstInteraction);
 
+  setCollapsed(shouldCollapse);
   render();
   tryPlay();
 })();
+
+// V0.22: attempt the original Weibo page first, while keeping a reliable high-fidelity card fallback.
+document.querySelectorAll('[data-weibo-smart]').forEach((shell) => {
+  const frame = shell.querySelector('[data-weibo-frame]');
+  const fallback = shell.querySelector('[data-weibo-fallback]');
+  const switcher = shell.querySelector('[data-weibo-switch]');
+  const status = shell.querySelector('[data-weibo-status]');
+  if (!frame || !fallback || !switcher || !status) return;
+
+  let showingFrame = false;
+  let frameResponded = false;
+
+  const showFallback = (message = '微博限制了第三方嵌入，已切换为卡片展示。') => {
+    showingFrame = false;
+    shell.classList.remove('is-showing-frame');
+    frame.setAttribute('aria-hidden', 'true');
+    fallback.removeAttribute('aria-hidden');
+    switcher.textContent = '尝试加载原微博';
+    status.textContent = message;
+  };
+
+  const showFrame = () => {
+    showingFrame = true;
+    shell.classList.add('is-showing-frame');
+    frame.removeAttribute('aria-hidden');
+    fallback.setAttribute('aria-hidden', 'true');
+    switcher.textContent = '切换高仿卡片';
+    status.textContent = '已加载微博页面；如显示异常，可切换为卡片。';
+  };
+
+  const timeout = window.setTimeout(() => {
+    if (!frameResponded) showFallback();
+  }, 7000);
+
+  frame.addEventListener('load', () => {
+    frameResponded = true;
+    window.clearTimeout(timeout);
+    // Some platforms return a login/blocked page inside the frame. Keep a manual
+    // switch in the toolbar so the visitor can immediately return to the card.
+    window.setTimeout(showFrame, 450);
+  });
+
+  frame.addEventListener('error', () => {
+    frameResponded = false;
+    window.clearTimeout(timeout);
+    showFallback();
+  });
+
+  switcher.addEventListener('click', () => {
+    if (showingFrame) {
+      showFallback('已手动切换为卡片展示。');
+    } else {
+      showFrame();
+    }
+  });
+
+  showFallback('正在检测微博页面是否允许嵌入；检测期间先展示卡片。');
+});
