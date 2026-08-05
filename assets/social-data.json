@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-04",
+  "updated": "2026-08-05",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://v.douyin.com/a3h78uwRapI/",
@@ -74,26 +74,26 @@
     "douyin": {
       "item01": {
         "url": "https://www.douyin.com/video/7664238615464070510",
-        "likes": 390000,
-        "comments": null,
-        "favorites": null,
-        "shares": null,
+        "likes": 395775,
+        "comments": 10623,
+        "favorites": 16908,
+        "shares": 38698,
         "label": "好难教的徒儿"
       },
       "item02": {
         "url": "https://www.douyin.com/video/7651140292226052590",
-        "likes": 236000,
-        "comments": null,
-        "favorites": null,
-        "shares": null,
+        "likes": 240086,
+        "comments": 6267,
+        "favorites": 11917,
+        "shares": 30883,
         "label": "#欧巴"
       },
       "item03": {
         "url": "https://www.douyin.com/video/7667876245400742346",
-        "likes": 126000,
-        "comments": 5469,
-        "favorites": 5314,
-        "shares": 6942,
+        "likes": 127305,
+        "comments": 5517,
+        "favorites": 5386,
+        "shares": 7024,
         "label": "徒儿有进步！"
       }
     },
@@ -101,24 +101,24 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11010,
+        "likes": 11015,
         "comments": 1235,
-        "reposts": 2902,
+        "reposts": 2903,
         "label": "喜欢你"
       },
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 19956,
-        "comments": 3034,
-        "reposts": 4654,
+        "likes": 20035,
+        "comments": 3041,
+        "reposts": 4657,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
         "status_id": "5323195886345801",
         "video_url": "https://weibo.com/tv/show/1034:5323193712312362?from=old_pc_videoshow",
-        "likes": 10632,
-        "comments": 1322,
+        "likes": 10640,
+        "comments": 1323,
         "reposts": 848,
         "label": "专属于小发夹的礼物🎁",
         "url": "https://weibo.com/8344769962/5323195886345801"
@@ -131,5 +131,5 @@
     "artistFollowers3Platforms": 1090000,
     "artistDouyinTotalLikes": 7584000
   },
-  "last_attempt": "2026-08-04T18:52:19+00:00"
+  "last_attempt": "2026-08-05T12:31:57+08:00"
 }
