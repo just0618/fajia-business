@@ -19,12 +19,12 @@
   "platforms": {
     "douyin": {
       "faxuange": {
-        "followers": 214000,
-        "engagement": 2491000
+        "followers": 224000,
+        "engagement": 2935000
       },
       "hejiashu": {
         "followers": 330000,
-        "engagement": 5554000
+        "engagement": 5555000
       }
     },
     "weibo": {
@@ -131,5 +131,5 @@
     "artistFollowers3Platforms": 1090000,
     "artistDouyinTotalLikes": 7584000
   },
-  "last_attempt": "2026-08-06T01:36:36+08:00"
+  "last_attempt": "2026-08-06T01:43:05+08:00"
 }
