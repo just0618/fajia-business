@@ -19,6 +19,7 @@ safe: a blocked run cannot overwrite valid values with zero or null.
 from __future__ import annotations
 
 import argparse
+import html as html_lib
 import json
 import math
 import re
@@ -36,6 +37,7 @@ except ImportError as exc:  # pragma: no cover
 ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "assets" / "social-data.json"
 DEBUG_DIR = ROOT / "debug-social"
+SAVED_BROWSER_DIR = Path.home() / ".fajia-business-browser"
 UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
@@ -364,11 +366,95 @@ def _read_douyin_profile_metric(
     return None, " | ".join(diagnostic_texts)
 
 
+def _read_metric_from_rendered_html(page: Any, data_e2e: str, label: str) -> tuple[int | None, str]:
+    """Fallback for rendered pages whose visible child counter is missed by Locator.
+
+    The page HTML still contains a stable ``data-e2e`` wrapper, for example::
+
+        <div data-e2e="user-info-fans">
+          <div>粉丝</div><div>22.4万</div>
+        </div>
+
+    Hashed class names are deliberately ignored.
+    """
+    try:
+        source = page.content()
+    except Exception:
+        return None, ""
+
+    anchor = f'data-e2e="{data_e2e}"'
+    start = source.find(anchor)
+    if start < 0:
+        anchor = f"data-e2e='{data_e2e}'"
+        start = source.find(anchor)
+    if start < 0:
+        return None, ""
+
+    segment = source[start : start + 800]
+    visible_tokens = [
+        html_lib.unescape(re.sub(r"<[^>]+>", "", token)).strip()
+        for token in re.findall(r">([^<>]+)<", segment)
+    ]
+    diagnostic = " | ".join(token for token in visible_tokens if token)
+
+    seen_label = False
+    for token in visible_tokens:
+        token = token.strip()
+        if not token:
+            continue
+        if label in token:
+            seen_label = True
+            continue
+        if seen_label:
+            number = parse_human_number(token)
+            if number is not None:
+                return number, diagnostic
+
+    # Last fallback: accept the first numeric token in the short anchored segment.
+    for token in visible_tokens:
+        number = parse_human_number(token.strip())
+        if number is not None:
+            return number, diagnostic
+    return None, diagnostic
+
+
+def _read_xhs_profile_metric(page: Any, label: str) -> tuple[int | None, str | None, str]:
+    """Read ``count`` from the same Xiaohongshu interaction item as ``label``."""
+    labels = page.locator(".user-interactions .shows")
+    diagnostics: list[str] = []
+    for index in range(labels.count()):
+        label_node = labels.nth(index)
+        try:
+            label_text = label_node.inner_text(timeout=5_000).strip()
+        except Exception:
+            continue
+        if label_text:
+            diagnostics.append(label_text)
+        if label_text != label:
+            continue
+        parent = label_node.locator("xpath=..").first
+        count_node = parent.locator(".count").first
+        try:
+            token = count_node.inner_text(timeout=5_000).strip()
+        except Exception:
+            token = ""
+        if token:
+            diagnostics.append(token)
+            return parse_human_number(token), token, " | ".join(diagnostics)
+
+    interaction_text = _read_locator_text(page, ".user-interactions")
+    if not interaction_text:
+        interaction_text = _read_locator_text(page, ".data-info")
+    token = extract_labeled_token(interaction_text, label)
+    return parse_human_number(token), token, interaction_text or " | ".join(diagnostics)
+
+
 def browser_collect_profiles(
     data: dict[str, Any],
     *,
     headless: bool = True,
     debug: bool = False,
+    login_xhs: bool = False,
 ) -> bool:
     """Collect public account/profile counters from rendered pages.
 
@@ -393,16 +479,52 @@ def browser_collect_profiles(
     }
 
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(
-            headless=headless,
-            args=["--no-sandbox"],
-        )
-        context = browser.new_context(
-            user_agent=UA,
-            locale="zh-CN",
-            viewport={"width": 1365, "height": 900},
-            extra_http_headers={"Accept-Language": "zh-CN,zh;q=0.9,en;q=0.7"},
-        )
+        browser = None
+        # A normal Chrome login is not visible to Playwright. For local headed runs
+        # we therefore reuse a dedicated persistent profile under the user's home
+        # directory. It stays outside the Git repository and is never committed.
+        if not headless or login_xhs:
+            SAVED_BROWSER_DIR.mkdir(parents=True, exist_ok=True)
+            context = playwright.chromium.launch_persistent_context(
+                user_data_dir=str(SAVED_BROWSER_DIR),
+                headless=False,
+                args=["--no-sandbox"],
+                user_agent=UA,
+                locale="zh-CN",
+                viewport={"width": 1365, "height": 900},
+                extra_http_headers={"Accept-Language": "zh-CN,zh;q=0.9,en;q=0.7"},
+            )
+        else:
+            browser = playwright.chromium.launch(
+                headless=True,
+                args=["--no-sandbox"],
+            )
+            context = browser.new_context(
+                user_agent=UA,
+                locale="zh-CN",
+                viewport={"width": 1365, "height": 900},
+                extra_http_headers={"Accept-Language": "zh-CN,zh;q=0.9,en;q=0.7"},
+            )
+
+        if login_xhs:
+            login_url = sources.get("xhs", {}).get("faxuange_profile") or "https://www.xiaohongshu.com/"
+            login_page = context.new_page()
+            try:
+                login_page.goto(login_url, wait_until="domcontentloaded", timeout=60_000)
+                log("[login/xhs] 请在打开的小红书窗口中完成登录；脚本最多等待 5 分钟。")
+                deadline = time.time() + 300
+                while time.time() < deadline:
+                    login_page.wait_for_timeout(2_000)
+                    followers, follower_token, _ = _read_xhs_profile_metric(login_page, "粉丝")
+                    if followers is not None and follower_token and not follower_token.endswith("+"):
+                        log(f"[login/xhs] 登录状态已识别，当前页面粉丝={follower_token}")
+                        break
+                else:
+                    log("[login/xhs] 等待超时；将保留旧数据，不会写入模糊值。")
+            except Exception as exc:
+                log(f"[login/xhs] {exc}")
+            finally:
+                login_page.close()
 
         # Douyin: stable data-e2e anchors supplied by the rendered profile page.
         for name in ("faxuange", "hejiashu"):
@@ -426,6 +548,19 @@ def browser_collect_profiles(
                     '[data-e2e="user-info-like"]',
                     "获赞",
                 )
+
+                if followers is None:
+                    followers, html_fans_text = _read_metric_from_rendered_html(
+                        page, "user-info-fans", "粉丝"
+                    )
+                    if html_fans_text:
+                        fans_text = f"{fans_text} | html={html_fans_text}"
+                if engagement is None:
+                    engagement, html_likes_text = _read_metric_from_rendered_html(
+                        page, "user-info-like", "获赞"
+                    )
+                    if html_likes_text:
+                        likes_text = f"{likes_text} | html={html_likes_text}"
 
                 if followers is not None:
                     captured["followers"] = followers
@@ -524,13 +659,15 @@ def browser_collect_profiles(
                 page.goto(url, wait_until="domcontentloaded", timeout=60_000)
                 page.wait_for_timeout(6_000)
 
-                interaction_text = _read_locator_text(page, ".user-interactions")
-                if not interaction_text:
-                    interaction_text = _read_locator_text(page, ".data-info")
-                follower_token = extract_labeled_token(interaction_text, "粉丝")
-                engagement_token = extract_labeled_token(interaction_text, "获赞与收藏")
-                followers = parse_human_number(follower_token)
-                engagement = parse_human_number(engagement_token)
+                followers, follower_token, follower_diag = _read_xhs_profile_metric(
+                    page, "粉丝"
+                )
+                engagement, engagement_token, engagement_diag = _read_xhs_profile_metric(
+                    page, "获赞与收藏"
+                )
+                interaction_text = (
+                    f"followers={follower_diag!r}\nengagement={engagement_diag!r}"
+                )
 
                 # Logged-out Xiaohongshu frequently exposes only coarse floors such
                 # as ``1万+``. Those are not real-time exact counters and must not
@@ -632,7 +769,8 @@ def browser_collect_profiles(
                 page.close()
 
         context.close()
-        browser.close()
+        if browser is not None:
+            browser.close()
 
     return any_changed
 
@@ -998,10 +1136,24 @@ def main() -> int:
         action="store_true",
         help="Update account/profile counters only; skip representative post metrics",
     )
+    parser.add_argument(
+        "--login-xhs",
+        action="store_true",
+        help="Open a persistent Xiaohongshu browser session and wait for manual login",
+    )
     args = parser.parse_args()
 
     data = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     changed = False
+
+    # Replace the expired/short Xiaohongshu link with the stable profile URL
+    # supplied from the logged-in public profile page. Query tokens are omitted
+    # because they expire and must not be committed.
+    xhs_sources = data.setdefault("sources", {}).setdefault("xhs", {})
+    faxuange_xhs_url = "https://www.xiaohongshu.com/user/profile/634b3b25000000001802ce29"
+    if xhs_sources.get("faxuange_profile") != faxuange_xhs_url:
+        xhs_sources["faxuange_profile"] = faxuange_xhs_url
+        changed = True
 
     # V0.20 content migration: the third Douyin card now points to a new note.
     # Clear the former post's counters once, then let the normal browser collector
@@ -1040,6 +1192,7 @@ def main() -> int:
             data,
             headless=not args.headed,
             debug=args.debug,
+            login_xhs=args.login_xhs,
         )
 
     if args.profiles_only:
