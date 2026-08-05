@@ -74,26 +74,26 @@
     "douyin": {
       "item01": {
         "url": "https://www.douyin.com/video/7664238615464070510",
-        "likes": 395775,
-        "comments": 10623,
-        "favorites": 16908,
-        "shares": 38698,
+        "likes": 398315,
+        "comments": 10847,
+        "favorites": 17113,
+        "shares": 39018,
         "label": "好难教的徒儿"
       },
       "item02": {
         "url": "https://www.douyin.com/video/7651140292226052590",
-        "likes": 240086,
+        "likes": 241479,
         "comments": 6267,
-        "favorites": 11917,
-        "shares": 30883,
+        "favorites": 12003,
+        "shares": 30949,
         "label": "#欧巴"
       },
       "item03": {
         "url": "https://www.douyin.com/note/7670451363546191754",
-        "likes": null,
-        "comments": null,
-        "favorites": null,
-        "shares": null,
+        "likes": 182000,
+        "comments": 16000,
+        "favorites": 11000,
+        "shares": 25000,
         "label": "还能遇见你"
       }
     },
@@ -109,15 +109,15 @@
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 20161,
-        "comments": 3054,
+        "likes": 20170,
+        "comments": 3055,
         "reposts": 4656,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
         "status_id": "5323195886345801",
         "video_url": "https://weibo.com/tv/show/1034:5323193712312362?from=old_pc_videoshow",
-        "likes": 10657,
+        "likes": 10658,
         "comments": 1323,
         "reposts": 848,
         "label": "专属于小发夹的礼物🎁",
@@ -131,5 +131,5 @@
     "artistFollowers3Platforms": 1090000,
     "artistDouyinTotalLikes": 7584000
   },
-  "last_attempt": "2026-08-05T10:16:40+00:00"
+  "last_attempt": "2026-08-05T18:48:38+08:00"
 }
