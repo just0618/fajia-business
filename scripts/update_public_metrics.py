@@ -85,7 +85,7 @@ def parse_human_number(value: Any) -> int | None:
     text = re.sub(r"\s+", "", text)
     if not text or text in {"-", "--", "null", "None"}:
         return None
-    match = re.fullmatch(r"([0-9]+(?:\.[0-9]+)?)(万|w|W|亿|k|K)?\+?", text)
+    match = re.fullmatch(r"([0-9]+(?:\.[0-9]+)?)(万|w|W|亿|k|K|m|M|b|B)?\+?", text)
     if not match:
         return None
     number = float(match.group(1))
@@ -98,6 +98,10 @@ def parse_human_number(value: Any) -> int | None:
         "W": 10_000,
         "万": 10_000,
         "亿": 100_000_000,
+        "m": 1_000_000,
+        "M": 1_000_000,
+        "b": 1_000_000_000,
+        "B": 1_000_000_000,
     }[unit]
     return int(round(number * multiplier))
 
@@ -273,6 +277,366 @@ def _write_debug(page: Any, label: str, message: str) -> None:
     base.with_suffix(".txt").write_text(message, encoding="utf-8")
 
 
+
+NUMBER_TOKEN_PATTERN = r"[0-9][0-9,]*(?:\.[0-9]+)?(?:万|亿|[kKmMbB])?\+?"
+
+
+def extract_labeled_token(text: str, label: str) -> str | None:
+    """Return the human-formatted number token next to a visible label."""
+    normalized = re.sub(r"\s+", " ", text or "").strip()
+    escaped = re.escape(label)
+    patterns = (
+        rf"({NUMBER_TOKEN_PATTERN})\s*{escaped}",
+        rf"{escaped}\s*({NUMBER_TOKEN_PATTERN})",
+    )
+    for pattern in patterns:
+        match = re.search(pattern, normalized, flags=re.IGNORECASE)
+        if match:
+            return match.group(1)
+    return None
+
+
+def extract_labeled_number(text: str, label: str) -> int | None:
+    """Read a human-formatted number immediately before or after a visible label."""
+    token = extract_labeled_token(text, label)
+    return parse_human_number(token) if token is not None else None
+
+
+def _read_locator_text(page: Any, selector: str, *, prefer_last: bool = False) -> str:
+    locator = page.locator(selector)
+    if not locator.count():
+        return ""
+    node = locator.last if prefer_last else locator.first
+    try:
+        return node.inner_text(timeout=5_000).strip()
+    except Exception:
+        return ""
+
+
+def _read_douyin_profile_metric(
+    page: Any,
+    selector: str,
+    label: str,
+) -> tuple[int | None, str]:
+    """Read a Douyin profile counter without relying on hashed class names.
+
+    Douyin may render more than one semantic node. Some hidden/early nodes contain
+    only the label (for example ``粉丝``), while the visible node contains a sibling
+    number. We therefore inspect all matching nodes from last to first, then inspect
+    their direct children and nearby parents. This keeps the parser working across
+    both known DOM layouts:
+
+    ``<div data-e2e=...><div>粉丝</div><div>22.4万</div></div>``
+
+    and layouts where ``data-e2e`` is attached only to the label element.
+    """
+    roots = page.locator(selector)
+    diagnostic_texts: list[str] = []
+
+    for index in range(roots.count() - 1, -1, -1):
+        root = roots.nth(index)
+        candidates = [
+            root.locator(":scope > div").last,
+            root,
+            root.locator("xpath=..").first,
+            root.locator("xpath=../..").first,
+        ]
+        for candidate in candidates:
+            try:
+                if not candidate.count():
+                    continue
+                raw_text = candidate.inner_text(timeout=5_000).strip()
+            except Exception:
+                continue
+            if not raw_text:
+                continue
+            if raw_text not in diagnostic_texts:
+                diagnostic_texts.append(raw_text)
+
+            # A numeric child such as ``22.4万`` can be parsed directly. A parent
+            # such as ``粉丝\n22.4万`` is parsed using the visible label.
+            number = parse_human_number(raw_text)
+            if number is None:
+                number = extract_labeled_number(raw_text, label)
+            if number is not None:
+                return number, raw_text
+
+    return None, " | ".join(diagnostic_texts)
+
+
+def browser_collect_profiles(
+    data: dict[str, Any],
+    *,
+    headless: bool = True,
+    debug: bool = False,
+) -> bool:
+    """Collect public account/profile counters from rendered pages.
+
+    This deliberately uses semantic attributes and visible Chinese/English labels
+    instead of hashed CSS classes, because the classes change frequently.
+    """
+    try:
+        from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        log("[skip/profile/browser] playwright is not installed")
+        return False
+
+    sources = data.get("sources", {})
+    platforms = data.get("platforms", {})
+    any_changed = False
+
+    instagram_handles = {
+        "faxuange": "faxuange",
+        "hejiashu": "hejiashu1010",
+        "jewelrybox": "jewelrybox7231010",
+    }
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(
+            headless=headless,
+            args=["--no-sandbox"],
+        )
+        context = browser.new_context(
+            user_agent=UA,
+            locale="zh-CN",
+            viewport={"width": 1365, "height": 900},
+            extra_http_headers={"Accept-Language": "zh-CN,zh;q=0.9,en;q=0.7"},
+        )
+
+        # Douyin: stable data-e2e anchors supplied by the rendered profile page.
+        for name in ("faxuange", "hejiashu"):
+            url = sources.get("douyin", {}).get(f"{name}_profile")
+            target = platforms.get("douyin", {}).get(name)
+            if not url or not isinstance(target, dict):
+                continue
+            page = context.new_page()
+            captured: dict[str, int] = {}
+            try:
+                page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+                page.wait_for_timeout(6_000)
+
+                followers, fans_text = _read_douyin_profile_metric(
+                    page,
+                    '[data-e2e="user-info-fans"]',
+                    "粉丝",
+                )
+                engagement, likes_text = _read_douyin_profile_metric(
+                    page,
+                    '[data-e2e="user-info-like"]',
+                    "获赞",
+                )
+
+                if followers is not None:
+                    captured["followers"] = followers
+                if engagement is not None:
+                    captured["engagement"] = engagement
+
+                changed = False
+                for key, value in captured.items():
+                    changed |= set_number(target, key, value)
+                any_changed |= changed
+                log(
+                    f"[profile/douyin] {name}: "
+                    + (json.dumps(captured, ensure_ascii=False) if captured else "no metrics")
+                )
+                if debug or not captured:
+                    _write_debug(
+                        page,
+                        f"profile-douyin-{name}",
+                        f"fans_text={fans_text!r}\nlikes_text={likes_text!r}\n"
+                        f"captured={json.dumps(captured, ensure_ascii=False)}",
+                    )
+            except PlaywrightTimeoutError as exc:
+                log(f"[skip/profile/douyin] timeout {name}: {exc}")
+                _write_debug(page, f"profile-douyin-{name}-timeout", str(exc))
+            except Exception as exc:
+                log(f"[skip/profile/douyin] {name}: {exc}")
+                _write_debug(page, f"profile-douyin-{name}-error", str(exc))
+            finally:
+                page.close()
+
+        # Weibo: use the UID-specific fans link and the visible 转评赞 label.
+        for name, uid in {
+            "faxuange": sources.get("weibo", {}).get("faxuange_uid"),
+            "hejiashu": sources.get("weibo", {}).get("hejiashu_uid"),
+            "jewelrybox": sources.get("weibo", {}).get("jewelrybox_uid"),
+        }.items():
+            target = platforms.get("weibo", {}).get(name)
+            if not uid or not isinstance(target, dict):
+                continue
+            page = context.new_page()
+            captured: dict[str, int] = {}
+            try:
+                page.goto(
+                    f"https://weibo.com/u/{uid}",
+                    wait_until="domcontentloaded",
+                    timeout=60_000,
+                )
+                page.wait_for_timeout(6_000)
+
+                fans_text = _read_locator_text(
+                    page,
+                    f'a[href*="/u/page/follow/{uid}"][href*="relate=fans"]',
+                )
+                main_text = _read_locator_text(page, "main") or _read_locator_text(page, "body")
+                followers = extract_labeled_number(fans_text, "粉丝")
+                engagement = extract_labeled_number(main_text, "转评赞")
+
+                if followers is not None:
+                    captured["followers"] = followers
+                if engagement is not None:
+                    captured["engagement"] = engagement
+
+                changed = False
+                for key, value in captured.items():
+                    changed |= set_number(target, key, value)
+                any_changed |= changed
+                log(
+                    f"[profile/weibo] {name}: "
+                    + (json.dumps(captured, ensure_ascii=False) if captured else "no metrics")
+                )
+                if debug or not captured:
+                    _write_debug(
+                        page,
+                        f"profile-weibo-{name}",
+                        f"fans_text={fans_text!r}\n"
+                        f"captured={json.dumps(captured, ensure_ascii=False)}",
+                    )
+            except PlaywrightTimeoutError as exc:
+                log(f"[skip/profile/weibo] timeout {name}: {exc}")
+                _write_debug(page, f"profile-weibo-{name}-timeout", str(exc))
+            except Exception as exc:
+                log(f"[skip/profile/weibo] {name}: {exc}")
+                _write_debug(page, f"profile-weibo-{name}-error", str(exc))
+            finally:
+                page.close()
+
+        # Xiaohongshu: read the semantic interaction block and match by labels.
+        for name in ("faxuange", "hejiashu", "jewelrybox"):
+            url = sources.get("xhs", {}).get(f"{name}_profile")
+            target = platforms.get("xhs", {}).get(name)
+            if not url or not isinstance(target, dict):
+                continue
+            page = context.new_page()
+            captured: dict[str, int] = {}
+            try:
+                page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+                page.wait_for_timeout(6_000)
+
+                interaction_text = _read_locator_text(page, ".user-interactions")
+                if not interaction_text:
+                    interaction_text = _read_locator_text(page, ".data-info")
+                follower_token = extract_labeled_token(interaction_text, "粉丝")
+                engagement_token = extract_labeled_token(interaction_text, "获赞与收藏")
+                followers = parse_human_number(follower_token)
+                engagement = parse_human_number(engagement_token)
+
+                # Logged-out Xiaohongshu frequently exposes only coarse floors such
+                # as ``1万+``. Those are not real-time exact counters and must not
+                # overwrite a previously stored, more precise value.
+                if followers is not None and follower_token and not follower_token.endswith("+"):
+                    captured["followers"] = followers
+                if engagement is not None and engagement_token and not engagement_token.endswith("+"):
+                    captured["engagement"] = engagement
+
+                changed = False
+                for key, value in captured.items():
+                    changed |= set_number(target, key, value)
+                any_changed |= changed
+                log(
+                    f"[profile/xhs] {name}: "
+                    + (json.dumps(captured, ensure_ascii=False) if captured else "no metrics")
+                )
+                if debug or not captured:
+                    _write_debug(
+                        page,
+                        f"profile-xhs-{name}",
+                        f"interaction_text={interaction_text!r}\n"
+                        f"captured={json.dumps(captured, ensure_ascii=False)}",
+                    )
+            except PlaywrightTimeoutError as exc:
+                log(f"[skip/profile/xhs] timeout {name}: {exc}")
+                _write_debug(page, f"profile-xhs-{name}-timeout", str(exc))
+            except Exception as exc:
+                log(f"[skip/profile/xhs] {name}: {exc}")
+                _write_debug(page, f"profile-xhs-{name}-error", str(exc))
+            finally:
+                page.close()
+
+        # Instagram: metadata is preferred; visible header text is the fallback.
+        for name, handle in instagram_handles.items():
+            target = platforms.get("instagram", {}).get(name)
+            if not isinstance(target, dict):
+                continue
+            configured = sources.get("instagram", {}).get(f"{name}_profile")
+            url = configured or f"https://www.instagram.com/{handle}/"
+            page = context.new_page()
+            captured: dict[str, int] = {}
+            try:
+                page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+                page.wait_for_timeout(6_000)
+
+                texts: list[str] = []
+                for selector in ('meta[property="og:description"]', 'meta[name="description"]'):
+                    locator = page.locator(selector).first
+                    if locator.count():
+                        value = locator.get_attribute("content")
+                        if value:
+                            texts.append(value)
+                header_text = _read_locator_text(page, "main header")
+                if not header_text:
+                    header_text = _read_locator_text(page, "header")
+                if header_text:
+                    texts.append(header_text)
+                combined = "\n".join(texts)
+
+                followers = (
+                    extract_labeled_number(combined, "粉丝")
+                    or extract_labeled_number(combined, "followers")
+                    or extract_labeled_number(combined, "follower")
+                )
+                posts = (
+                    extract_labeled_number(combined, "帖子")
+                    or extract_labeled_number(combined, "posts")
+                    or extract_labeled_number(combined, "post")
+                )
+
+                if followers is not None:
+                    captured["followers"] = followers
+                if posts is not None:
+                    captured["posts"] = posts
+
+                changed = False
+                for key, value in captured.items():
+                    changed |= set_number(target, key, value)
+                any_changed |= changed
+                log(
+                    f"[profile/instagram] {name}: "
+                    + (json.dumps(captured, ensure_ascii=False) if captured else "no metrics")
+                )
+                if debug or not captured:
+                    _write_debug(
+                        page,
+                        f"profile-instagram-{name}",
+                        f"combined={combined!r}\n"
+                        f"captured={json.dumps(captured, ensure_ascii=False)}",
+                    )
+            except PlaywrightTimeoutError as exc:
+                log(f"[skip/profile/instagram] timeout {name}: {exc}")
+                _write_debug(page, f"profile-instagram-{name}-timeout", str(exc))
+            except Exception as exc:
+                log(f"[skip/profile/instagram] {name}: {exc}")
+                _write_debug(page, f"profile-instagram-{name}-error", str(exc))
+            finally:
+                page.close()
+
+        context.close()
+        browser.close()
+
+    return any_changed
+
+
 def browser_collect(
     douyin_jobs: list[tuple[str, dict[str, Any]]],
     weibo_jobs: list[tuple[str, str, dict[str, Any]]],
@@ -416,7 +780,7 @@ def browser_collect(
                         # A semantic anchor may contain icon markup plus the visible
                         # number. Extract the final human-readable counter token.
                         tokens = re.findall(
-                            r"(?<!\\d)(\\d+(?:\\.\\d+)?(?:万|w|W|亿|k|K)?)(?!\\d)",
+                            r"(?<!\d)(\d+(?:\.\d+)?(?:万|w|W|亿|k|K)?)(?!\d)",
                             raw_text,
                         )
                         for token in reversed(tokens):
@@ -629,6 +993,11 @@ def main() -> int:
     parser.add_argument(
         "--requests-only", action="store_true", help="Skip Playwright browser fallback"
     )
+    parser.add_argument(
+        "--profiles-only",
+        action="store_true",
+        help="Update account/profile counters only; skip representative post metrics",
+    )
     args = parser.parse_args()
 
     data = json.loads(DATA_PATH.read_text(encoding="utf-8"))
@@ -665,6 +1034,24 @@ def main() -> int:
         url = sources.get("xhs", {}).get(f"{name}_profile")
         if url and name in platforms.get("xhs", {}):
             changed |= update_xhs_profile(url, platforms["xhs"][name])
+
+    if not args.requests_only:
+        changed |= browser_collect_profiles(
+            data,
+            headless=not args.headed,
+            debug=args.debug,
+        )
+
+    if args.profiles_only:
+        data["last_attempt"] = datetime.now().astimezone().isoformat(timespec="seconds")
+        if changed:
+            data["updated"] = date.today().isoformat()
+        DATA_PATH.write_text(
+            json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        log(f"wrote {DATA_PATH}; changed={changed}")
+        return 0
 
     douyin_jobs: list[tuple[str, dict[str, Any]]] = []
     for item in data.get("content", {}).get("douyin", {}).values():
