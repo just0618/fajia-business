@@ -5,8 +5,6 @@ nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classL
 const toast=document.getElementById('toast');
 function showToast(msg){if(!toast)return;toast.textContent=msg;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2400)}
 document.getElementById('copyEmail')?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText('mejoymedia@foxmail.com');showToast('商务邮箱已复制');}catch{showToast('请手动复制：mejoymedia@foxmail.com')}});
-document.getElementById('materialBtn')?.addEventListener('click',()=>showToast('商务素材包尚在整理，将根据授权范围提供'));
-
 function getPath(obj,path){return path.split('.').reduce((v,k)=>v===undefined||v===null?null:v[k],obj)}
 function sumKnown(values){
   const known=values.filter(v=>typeof v==='number'&&Number.isFinite(v));
@@ -53,7 +51,7 @@ async function hydrateSocialData(){
       if(v!==undefined)el.textContent=displayValue(v,el);
     });
     const note=document.getElementById('socialUpdated');
-    if(note&&data.updated){const [y,m,d]=data.updated.split('-'); note.textContent=`公开主页数据截至 ${y}年${Number(m)}月${Number(d)}日；各平台统计口径不同。`;}
+    if(note&&data.updated){const [y,m,d]=data.updated.split('-'); note.textContent=`数据截至 ${y}年${Number(m)}月${Number(d)}日；粉丝数为平台公开数据，跨平台未去重。`;}
   }catch(_){/* file:// 预览时保留 HTML 内置数值 */}
 }
 hydrateSocialData();
