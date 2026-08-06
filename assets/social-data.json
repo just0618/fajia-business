@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-05",
+  "updated": "2026-08-06",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -23,18 +23,18 @@
         "engagement": 2935000
       },
       "hejiashu": {
-        "followers": 330000,
-        "engagement": 5555000
+        "followers": 241,
+        "engagement": 5602000
       }
     },
     "weibo": {
       "faxuange": {
-        "followers": 208000,
-        "engagement": 916000
+        "followers": 209000,
+        "engagement": 919000
       },
       "hejiashu": {
         "followers": 280000,
-        "engagement": 1308000
+        "engagement": 1312000
       },
       "jewelrybox": {
         "followers": 37000,
@@ -87,10 +87,10 @@
       },
       "item03": {
         "url": "https://www.douyin.com/note/7670451363546191754",
-        "likes": 316000,
-        "comments": 21000,
-        "favorites": 17000,
-        "shares": 39000,
+        "likes": 352000,
+        "comments": 22000,
+        "favorites": 19000,
+        "shares": 43000,
         "label": "还能遇见你"
       }
     },
@@ -98,7 +98,7 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11025,
+        "likes": 11035,
         "comments": 1235,
         "reposts": 2903,
         "label": "喜欢你"
@@ -106,15 +106,15 @@
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 20258,
-        "comments": 3058,
-        "reposts": 4658,
+        "likes": 20338,
+        "comments": 3060,
+        "reposts": 4659,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
         "status_id": "5323195886345801",
         "video_url": "https://weibo.com/tv/show/1034:5323193712312362?from=old_pc_videoshow",
-        "likes": 10680,
+        "likes": 10698,
         "comments": 1323,
         "reposts": 848,
         "label": "专属于小发夹的礼物🎁",
@@ -125,8 +125,8 @@
   "summary": {
     "representativeDouyinLikes": 1150000,
     "brandCooperations": 2,
-    "artistFollowers3Platforms": 1090000,
-    "artistDouyinTotalLikes": 7584000
+    "artistFollowers3Platforms": 787241,
+    "artistDouyinTotalLikes": 8537000
   },
-  "last_attempt": "2026-08-05T23:46:22+08:00"
+  "last_attempt": "2026-08-06T04:59:13+00:00"
 }
