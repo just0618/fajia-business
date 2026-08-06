@@ -15,7 +15,7 @@ from reportlab.pdfgen import canvas
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
 DATA = json.loads((ASSETS / "social-data.json").read_text(encoding="utf-8"))
-OUT = ROOT / "downloads" / "fajia-business-media-kit-v0.30.pdf"
+OUT = ROOT / "downloads" / "fajia-business-media-kit-v0.31.pdf"
 CACHE = ROOT / ".pdf-cache"
 CACHE.mkdir(exist_ok=True)
 OUT.parent.mkdir(exist_ok=True)
@@ -337,9 +337,9 @@ def build():
     eyebrow(c,"DUO ARTISTS · BRAND COOPERATION REFERENCE",52,430,size=9,tracking=1.7)
     c.setFont("CNDisplay",49); c.setFillColor(INK); c.drawString(52,350,"法嘉致富")
     c.setFont("CNDisplay",26); c.drawString(52,305,"｜星遇企划档案")
-    draw_text(c,"不要轻视每一次遇见的威力。",52,240,390,font="CN",size=15,color=INK,leading=24)
+    draw_text(c,"不要轻视每一次遇见的威力。",52,240,390,font="CN",size=13.5,color=INK,leading=22)
     signature_badge(c,340,198,"法宣阁",100)
-    draw_text(c,"无论你在追逐什么，都请记得停下来抬头看看，\n“天上有颗最亮的星星”它因为你而存在。",52,165,390,font="CN",size=12,color=INK,leading=22)
+    draw_text(c,"无论你在追逐什么，都请记得停下来抬头看看，\n“天上有颗最亮的星星”它因为你而存在。",52,165,390,font="CN",size=13.5,color=INK,leading=22)
     signature_badge(c,340,72,"贺嘉述",100)
     footer(c,page); c.showPage(); page+=1
 
@@ -558,13 +558,15 @@ def build():
     gradient(c, SOFT_PINK, SOFT_GOLD)
     eyebrow(c,"RESOURCE DOWNLOADS · CONTACT",58,450,size=10,tracking=1.8)
     c.setFont("CNDisplay",38); c.setFillColor(INK); c.drawString(58,380,"资料下载与合作建联")
-    rounded_box(c,58,190,844,150,fill=Color(1,1,1,alpha=.72),stroke=LINE,radius=10)
+    rounded_box(c,58,220,844,140,fill=Color(1,1,1,alpha=.72),stroke=LINE,radius=10)
     legal="本网站内容用于持续更新与信息发布，PDF 文件仅供合作交流与非商业用途使用。\n所有资料严禁用于商业销售、有偿传播或任何营利性活动，未经书面授权不得转售或二次分发。\n本方保留对违规使用行为追究法律责任的权利。"
-    draw_text(c,legal,82,305,795,font="CN",size=12,color=INK,leading=26,max_lines=6)
-    rounded_box(c,155,62,650,92,fill=Color(1,1,1,alpha=.82),stroke=PINK,radius=14,lw=1.2)
-    c.setFont("CN",11); c.setFillColor(PINK_DARK); c.drawCentredString(480,126,"合作联系邮箱")
-    c.setFont("Helvetica-Bold",23); c.setFillColor(INK); c.drawCentredString(480,88,"mejoymedia@foxmail.com")
-    hyperlink(c,"mailto:mejoymedia@foxmail.com",155,62,650,92)
+    draw_text(c,legal,82,325,795,font="CN",size=11.5,color=INK,leading=24,max_lines=6)
+    disclaimer="本文所涉及的具体合作身份、交付形式及执行方案等相关事宜，仅供初步沟通与参考之用，\n最终内容均以米椒娱乐官方正式沟通及书面确认为准。"
+    draw_text(c,disclaimer,100,190,760,font="CN",size=9.8,color=MUTED,leading=16,max_lines=3,align="center")
+    rounded_box(c,155,54,650,92,fill=Color(1,1,1,alpha=.82),stroke=PINK,radius=14,lw=1.2)
+    c.setFont("CN",11); c.setFillColor(PINK_DARK); c.drawCentredString(480,118,"合作联系邮箱")
+    c.setFont("Helvetica-Bold",23); c.setFillColor(INK); c.drawCentredString(480,80,"mejoymedia@foxmail.com")
+    hyperlink(c,"mailto:mejoymedia@foxmail.com",155,54,650,92)
     footer(c,page); c.showPage()
 
     c.save()

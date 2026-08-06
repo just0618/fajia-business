@@ -1,7 +1,7 @@
-法嘉致富｜星遇企划档案网站 V0.30
+法嘉致富｜星遇企划档案网站 V0.31
 
 部署方式
-1. 将压缩包内 fajia-business-v0.30 文件夹中的全部内容，覆盖到 GitHub Desktop 克隆的 fajia-business 仓库根目录。
+1. 将压缩包内 fajia-business-v0.31 文件夹中的全部内容，覆盖到 GitHub Desktop 克隆的 fajia-business 仓库根目录。
 2. 在 GitHub Desktop 中检查改动，填写 Summary 后提交到 main。
 3. 点击 Push origin；GitHub Pages / EdgeOne 完成部署后，网页与下载 PDF 即会更新。
 
@@ -9,7 +9,7 @@
 1. GitHub Actions 升级为 actions/checkout@v5、actions/setup-python@v6 与 actions/upload-artifact@v6，消除旧 Node.js 20 运行时警告。
 2. 爬虫运行后先检查 assets/social-data.json 是否真的发生变化。
 3. 只有公开数据发生变化时，Actions 才安装 PDF 依赖和中文字体并重新生成 PDF。
-4. 自动生成 downloads/fajia-business-media-kit-v0.30.pdf。
+4. 自动生成 downloads/fajia-business-media-kit-v0.31.pdf。
 5. Actions 会把 assets/social-data.json 与新版 PDF 一起提交并推送。
 6. 若数据没有变化，将跳过 PDF 重建和提交，避免产生无意义的每日提交。
 7. 手动运行 Actions 与每日定时运行使用同一套自动更新流程。
