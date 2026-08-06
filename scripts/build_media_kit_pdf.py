@@ -15,7 +15,7 @@ from reportlab.pdfgen import canvas
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
 DATA = json.loads((ASSETS / "social-data.json").read_text(encoding="utf-8"))
-OUT = ROOT / "downloads" / "fajia-business-media-kit-v0.26.pdf"
+OUT = ROOT / "downloads" / "fajia-business-media-kit-v0.27.pdf"
 CACHE = ROOT / ".pdf-cache"
 CACHE.mkdir(exist_ok=True)
 OUT.parent.mkdir(exist_ok=True)
@@ -181,16 +181,28 @@ def hyperlink(c, url, x,y,w,h):
     c.linkURL(url,(x,y,x+w,y+h),relative=0,thickness=0)
 
 
+def draw_metric_value(c, value, x, y, size=28, align="left", width=0, color=INK):
+    """Render metric values with a CJK-capable font so units such as 万/项 never become black squares."""
+    c.setFont("CNDisplay", size)
+    c.setFillColor(color)
+    if align == "center":
+        c.drawCentredString(x + width / 2, y, value)
+    elif align == "right":
+        c.drawRightString(x + width, y, value)
+    else:
+        c.drawString(x, y, value)
+
+
 def metric_box(c, x,y,w,h,value,label,note=""):
-    rounded_box(c,x,y,w,h,fill=PAPER,stroke=LINE,radius=8)
-    c.setFont("Times-Bold",28)
+    rounded_box(c,x,y,w,h,fill=PAPER,stroke=LINE,radius=10)
+    c.setFillColor(SOFT_PINK)
+    c.roundRect(x+12,y+h-16,42,4,2,fill=1,stroke=0)
+    draw_metric_value(c,value,x+18,y+h-48,size=27)
+    c.setFont("CN",10.5)
     c.setFillColor(INK)
-    c.drawString(x+18,y+h-42,value)
-    c.setFont("CN",11)
-    c.setFillColor(INK)
-    c.drawString(x+18,y+h-68,label)
+    draw_text(c,label,x+18,y+h-77,w-36,font="CN",size=10.5,color=INK,leading=15,max_lines=2)
     if note:
-        c.setFont("CN",8.5); c.setFillColor(MUTED); c.drawString(x+18,y+16,note)
+        c.setFont("CN",8.2); c.setFillColor(MUTED); c.drawString(x+18,y+15,note)
 
 
 def profile_card(c,x,y,w,h,img,name,en,tags,facts):
@@ -220,33 +232,49 @@ def work_card(c,x,y,w,h,img,kind,name,desc,url):
 
 
 def platform_profile(c,x,y,w,h,img,name,followers,engagement=None,url=None):
-    rounded_box(c,x,y,w,h,fill=PAPER,stroke=LINE,radius=8)
-    draw_img(c,img,x+w/2-30,y+h-74,60,60,"cover",radius=30)
-    c.setFont("CN",12); c.setFillColor(INK); c.drawCentredString(x+w/2,y+h-92,name)
-    c.setStrokeColor(LINE); c.line(x+16,y+52,x+w-16,y+52)
-    c.setFont("Times-Bold",17); c.drawCentredString(x+w*.28,y+29,fmt(followers))
-    c.setFont("CN",7.5); c.setFillColor(MUTED); c.drawCentredString(x+w*.28,y+14,"粉丝")
-    if engagement is not None:
-        c.setFillColor(INK); c.setFont("Times-Bold",17); c.drawCentredString(x+w*.72,y+29,fmt(engagement))
-        c.setFont("CN",7.5); c.setFillColor(MUTED); c.drawCentredString(x+w*.72,y+14,"互动")
+    rounded_box(c,x,y,w,h,fill=PAPER,stroke=LINE,radius=12)
+    c.setFillColor(SOFT_PINK)
+    c.roundRect(x+1,y+h-78,w-2,77,11,fill=1,stroke=0)
+    draw_img(c,img,x+24,y+h-95,76,76,"cover",radius=38)
+    c.setFont("CNDisplay",17); c.setFillColor(INK); c.drawString(x+118,y+h-52,name)
+    c.setFont("CN",8.5); c.setFillColor(MUTED); c.drawString(x+118,y+h-74,"平台公开主页数据")
+    block_y=y+38
+    if engagement is None:
+        rounded_box(c,x+24,block_y,w-48,92,fill=CREAM,stroke=LINE,radius=8)
+        draw_metric_value(c,fmt(followers),x+24,block_y+48,size=27,align="center",width=w-48)
+        c.setFont("CN",8.5); c.setFillColor(MUTED); c.drawCentredString(x+w/2,block_y+20,"粉丝")
+    else:
+        gap=12
+        bw=(w-60-gap)/2
+        for bx,val,lab in [(x+24,fmt(followers),"粉丝"),(x+24+bw+gap,fmt(engagement),"累计获赞")]:
+            rounded_box(c,bx,block_y,bw,92,fill=CREAM,stroke=LINE,radius=8)
+            draw_metric_value(c,val,bx,block_y+48,size=24,align="center",width=bw)
+            c.setFont("CN",8.5); c.setFillColor(MUTED); c.drawCentredString(bx+bw/2,block_y+20,lab)
     if url: hyperlink(c,url,x,y,w,h)
 
 
 def content_card(c,x,y,w,h,poster,title_text,metrics,url,landscape=False):
-    rounded_box(c,x,y,w,h,fill=PAPER,stroke=LINE,radius=8)
-    image_h=h*.63
-    draw_img(c,poster,x,y+h-image_h,w,image_h,"cover",radius=8)
-    c.setFillColor(INK); c.setFont("CN",14); c.drawString(x+16,y+h-image_h-28,title_text)
-    yy=y+34
-    c.setStrokeColor(LINE); c.line(x+14,yy+30,x+w-14,yy+30)
-    c.setFont("CN",9.3); c.setFillColor(PINK_DARK)
-    parts=[]
-    if "likes" in metrics: parts.append(f"♥ {fmt(metrics.get('likes'))}")
-    if "comments" in metrics: parts.append(f"◯ {fmt(metrics.get('comments'))}")
-    if "favorites" in metrics: parts.append(f"☆ {fmt(metrics.get('favorites'))}")
-    if "shares" in metrics: parts.append(f"↗ {fmt(metrics.get('shares'))}")
-    if "reposts" in metrics: parts.append(f"↗ {fmt(metrics.get('reposts'))}")
-    c.drawString(x+16,yy,"   ".join(parts))
+    rounded_box(c,x,y,w,h,fill=PAPER,stroke=LINE,radius=10)
+    image_h=h*.60
+    draw_img(c,poster,x,y+h-image_h,w,image_h,"cover",radius=10)
+    title_y=y+h-image_h-28
+    draw_text(c,title_text,x+16,title_y,w-32,font="CN",size=12.8,color=INK,leading=18,max_lines=2)
+    c.setStrokeColor(LINE); c.line(x+14,y+59,x+w-14,y+59)
+    items=[]
+    if metrics.get("likes") is not None: items.append(("赞",fmt(metrics.get("likes"))))
+    if metrics.get("comments") is not None: items.append(("评",fmt(metrics.get("comments"))))
+    if metrics.get("favorites") is not None: items.append(("藏",fmt(metrics.get("favorites"))))
+    if metrics.get("shares") is not None: items.append(("享",fmt(metrics.get("shares"))))
+    if metrics.get("reposts") is not None: items.append(("转",fmt(metrics.get("reposts"))))
+    if items:
+        gap=5
+        pill_w=(w-32-gap*(len(items)-1))/len(items)
+        for i,(lab,val) in enumerate(items):
+            px=x+16+i*(pill_w+gap)
+            c.setFillColor(SOFT_PINK if i%2==0 else SOFT_GOLD)
+            c.roundRect(px,y+18,pill_w,28,6,fill=1,stroke=0)
+            c.setFont("CN",7.5); c.setFillColor(PINK_DARK); c.drawString(px+6,y+28,lab)
+            c.setFont("CNDisplay",9.5); c.setFillColor(INK); c.drawRightString(px+pill_w-6,y+27,val)
     hyperlink(c,url,x,y,w,h)
 
 
@@ -316,7 +344,8 @@ def build():
     d=platforms["douyin"]
     platform_profile(c,80,130,350,270,"assets/avatar-faxuange-main.webp","法宣阁",d["faxuange"]["followers"],d["faxuange"]["engagement"],DATA["sources"]["douyin"]["faxuange_profile"])
     platform_profile(c,530,130,350,270,"assets/avatar-hejiashu-main.webp","贺嘉述",d["hejiashu"]["followers"],d["hejiashu"]["engagement"],DATA["sources"]["douyin"]["hejiashu_profile"])
-    c.setFont("CN",10); c.setFillColor(MUTED); c.drawCentredString(W/2,85,"粉丝与累计获赞均来自平台公开主页，PDF 数据生成日：2026.08.06")
+    data_date = DATA.get("updated", "2026-08-06").replace("-", ".")
+    c.setFont("CN",10); c.setFillColor(MUTED); c.drawCentredString(W/2,85,f"粉丝与累计获赞均来自平台公开主页，PDF 数据生成日：{data_date}")
     c.showPage(); page+=1
 
     # 6 social matrix
@@ -333,10 +362,10 @@ def build():
             rounded_box(c,x,yy,230,104,fill=PAPER,stroke=LINE,radius=8)
             draw_img(c,imgs[u],x+14,yy+24,56,56,"cover",radius=28)
             c.setFont("CN",10.5); c.setFillColor(INK); c.drawString(x+82,yy+68,names[u])
-            c.setFont("Times-Bold",16); c.drawString(x+82,yy+39,fmt(platforms[key][u]["followers"]))
+            draw_metric_value(c,fmt(platforms[key][u]["followers"]),x+82,yy+39,size=15)
             c.setFont("CN",8); c.setFillColor(MUTED); c.drawString(x+82,yy+23,"粉丝")
             if "engagement" in platforms[key][u]:
-                c.setFont("Times-Bold",13); c.setFillColor(INK); c.drawRightString(x+214,yy+39,fmt(platforms[key][u]["engagement"]))
+                draw_metric_value(c,fmt(platforms[key][u]["engagement"]),x+128,yy+39,size=12.5,align="right",width=86)
                 c.setFont("CN",7.5); c.setFillColor(MUTED); c.drawRightString(x+214,yy+23,"互动")
     c.showPage(); page+=1
 
@@ -353,8 +382,18 @@ def build():
         (fmt(dy_comments),"当前展示抖音共创累计评论","按已抓取公开项"),
         (fmt(wb_reposts),"微博高赞作品累计转发","按已抓取公开项"),
         (fmt(wb_comments),"微博高赞作品累计评论","按已抓取公开项"),
-    ]): metric_box(c,48+i*218,270,200,125,v,l,note)
-    draw_text(c,"双人共创内容已成为双方账号的重要高互动内容类型，并在抖音与微博形成跨平台传播。页面选取具有代表性的公开内容，呈现点赞、评论、收藏、分享与转发等互动表现。",48,215,860,font="CN",size=14,color=INK,leading=25,max_lines=4)
+    ]): metric_box(c,48+i*218,285,200,125,v,l,note)
+    rounded_box(c,48,155,864,88,fill=CREAM,stroke=LINE,radius=10)
+    draw_text(c,"双人共创内容已成为双方账号的重要高互动内容类型，并在抖音与微博形成跨平台传播。页面选取具有代表性的公开内容，呈现点赞、评论、收藏、分享与转发等互动表现。",70,213,820,font="CN",size=12.5,color=INK,leading=22,max_lines=3)
+    flow=[("抖音爆款共创","高互动内容形成"),("微博高赞扩散","跨平台传播放大"),("官方账号沉淀","持续积累公开表现")]
+    fx=[70,360,650]
+    for i,(head,sub) in enumerate(flow):
+        rounded_box(c,fx[i],60,230,68,fill=PAPER,stroke=LINE,radius=9)
+        c.setFont("CNDisplay",14); c.setFillColor(INK); c.drawCentredString(fx[i]+115,96,head)
+        c.setFont("CN",8.5); c.setFillColor(MUTED); c.drawCentredString(fx[i]+115,76,sub)
+        if i<2:
+            c.setStrokeColor(PINK_DARK); c.setLineWidth(1.4); c.line(fx[i]+238,94,fx[i+1]-10,94)
+            c.line(fx[i+1]-18,100,fx[i+1]-10,94); c.line(fx[i+1]-18,88,fx[i+1]-10,94)
     c.showPage(); page+=1
 
     # 8 douyin content
@@ -454,25 +493,28 @@ def build():
     c.setFont("Times-Roman",12); c.drawString(477,52,"IS COMING SOON")
     c.showPage(); page+=1
 
-    # 15 concert
+    # 15 concert - editorial layout with a dedicated text panel (no image/text overlap)
     new_page(c,page)
     title(c,"DOUBLE HELIX「宿命回响」演唱会","LIVE EVENTS · 2026.07.25",cn_size=29)
-    draw_img(c,"assets/concertposter.webp",50,60,230,340,"contain",radius=6)
-    draw_img(c,"assets/concert-live-v2.webp",315,225,595,175,"cover",radius=6)
-    draw_img(c,"assets/concert-rehearsal-v2.webp",315,60,285,150,"cover",radius=6)
-    draw_img(c,"assets/concert-live-3.webp",615,60,295,150,"cover",radius=6)
-    c.setFont("CN",10); c.setFillColor(MUTED); c.drawString(315,204,"曼谷 · Thunder Dome")
-    draw_text(c,"积攒了许久的宿命回响，只为你们轰鸣。每段旋律，都是双程路上心与心的交织；每次相聚，都藏着未说尽的温柔与执念。",315,182,595,font="CN",size=10.2,color=INK,leading=17,max_lines=4)
+    draw_img(c,"assets/concertposter.webp",48,58,224,338,"contain",radius=8)
+    draw_img(c,"assets/concert-live-v2.webp",302,222,610,176,"cover",radius=8)
+    rounded_box(c,302,58,365,144,fill=CREAM,stroke=LINE,radius=10)
+    c.setFont("CN",10); c.setFillColor(PINK_DARK); c.drawString(324,174,"曼谷 · Thunder Dome")
+    c.setFont("CNDisplay",18); c.setFillColor(INK); c.drawString(324,143,"宿命回响，只为你们轰鸣")
+    draw_text(c,"每段旋律，都是双程路上心与心的交织；每次相聚，都藏着未说尽的温柔与执念。\n不必开口，曲调自有归处。",324,113,320,font="CN",size=10.2,color=INK,leading=18,max_lines=5)
+    draw_img(c,"assets/concert-live-3.webp",683,58,229,144,"cover",radius=8)
     c.showPage(); page+=1
 
-    # 16 fan meeting
+    # 16 fan meeting - same safe editorial grid
     new_page(c,page)
     title(c,"「宣你述说」双人见面会","LIVE EVENTS · 2026.07.26",cn_size=31)
-    draw_img(c,"assets/fanmeeting-v2.jpg",50,60,230,340,"contain",radius=6)
-    draw_img(c,"assets/fanmeeting-live-1.webp",315,225,595,175,"cover",radius=6)
-    draw_img(c,"assets/fanmeeting-live-2.webp",315,60,595,150,"cover",radius=6)
-    c.setFont("CN",10); c.setFillColor(MUTED); c.drawString(315,204,"曼谷 · LIDO CONNECT HALL 3（2F）")
-    draw_text(c,"「宣你述说」—以“宣”为名，以“述”为约。\n这既是两人名字的巧妙交织，也代表一份面向所有陪伴者的诚挚邀请：来听他们说，也来对他们说。",315,180,595,font="CN",size=10.2,color=INK,leading=18,max_lines=5)
+    draw_img(c,"assets/fanmeeting-v2.jpg",48,58,224,338,"contain",radius=8)
+    draw_img(c,"assets/fanmeeting-live-1.webp",302,222,610,176,"cover",radius=8)
+    rounded_box(c,302,58,365,144,fill=CREAM,stroke=LINE,radius=10)
+    c.setFont("CN",10); c.setFillColor(PINK_DARK); c.drawString(324,174,"曼谷 · LIDO CONNECT HALL 3（2F）")
+    c.setFont("CNDisplay",18); c.setFillColor(INK); c.drawString(324,143,"以“宣”为名，以“述”为约")
+    draw_text(c,"这既是两人名字的巧妙交织，也代表一份面向所有陪伴者的诚挚邀请。\n来听他们说，也来对他们说。",324,113,320,font="CN",size=10.2,color=INK,leading=18,max_lines=5)
+    draw_img(c,"assets/fanmeeting-live-2.webp",683,58,229,144,"cover",radius=8)
     c.showPage(); page+=1
 
     # 17 legal/contact
