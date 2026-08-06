@@ -839,3 +839,30 @@
     margin-right:0;
   }
 }
+
+
+/* ===== V0.28 final website refinements ===== */
+/* Give the LEECN role label breathing room before the coming-soon panel. */
+.brand-project--leecn .mini-placeholder-card{margin-top:36px}
+
+/* Make the two quote signatures visibly part of the hero hierarchy. */
+.hero-quote-item cite{
+  width:max-content;
+  margin:9px 0 0 auto;
+  padding:4px 11px;
+  border:1px solid rgba(216,95,122,.24);
+  border-radius:999px;
+  background:linear-gradient(90deg,rgba(255,138,161,.14),rgba(255,226,91,.18));
+  color:#4b3028;
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:.07em;
+}
+@media (max-width:700px){
+  .brand-project--leecn .mini-placeholder-card{margin-top:28px}
+  .hero-quote-item cite{font-size:14px;padding:3px 9px}
+}
+@media print{
+  .brand-project--leecn .mini-placeholder-card{margin-top:9mm}
+  .hero-quote-item cite{font-size:10.5pt;padding:1.5mm 3mm}
+}

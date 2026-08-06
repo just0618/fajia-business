@@ -15,7 +15,7 @@ from reportlab.pdfgen import canvas
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
 DATA = json.loads((ASSETS / "social-data.json").read_text(encoding="utf-8"))
-OUT = ROOT / "downloads" / "fajia-business-media-kit-v0.27.pdf"
+OUT = ROOT / "downloads" / "fajia-business-media-kit-v0.28.pdf"
 CACHE = ROOT / ".pdf-cache"
 CACHE.mkdir(exist_ok=True)
 OUT.parent.mkdir(exist_ok=True)
@@ -193,6 +193,47 @@ def draw_metric_value(c, value, x, y, size=28, align="left", width=0, color=INK)
         c.drawString(x, y, value)
 
 
+def signature_badge(c, x, y, name, w=100):
+    """A small, balanced signature label for the two cover quotes."""
+    c.setFillColor(Color(SOFT_PINK.red, SOFT_PINK.green, SOFT_PINK.blue, alpha=.92))
+    c.setStrokeColor(Color(PINK.red, PINK.green, PINK.blue, alpha=.45))
+    c.setLineWidth(.8)
+    c.roundRect(x, y, w, 25, 12, fill=1, stroke=1)
+    c.setFont("CNDisplay", 12.5)
+    c.setFillColor(INK)
+    c.drawCentredString(x + w/2, y + 7, f"——{name}")
+
+
+def compact_social_card(c, x, y, w, h, img, name, followers, engagement=None, engagement_label="互动"):
+    """Compact card used on the merged all-platform account page."""
+    rounded_box(c, x, y, w, h, fill=PAPER, stroke=LINE, radius=8)
+    draw_img(c, img, x+12, y+(h-46)/2, 46, 46, "cover", radius=23)
+    c.setFont("CN", 9.5); c.setFillColor(INK); c.drawString(x+68, y+h-25, name)
+    draw_metric_value(c, fmt(followers), x+68, y+19, size=13.5)
+    c.setFont("CN", 7.2); c.setFillColor(MUTED); c.drawString(x+68, y+7, "粉丝")
+    if engagement is not None:
+        draw_metric_value(c, fmt(engagement), x+w-96, y+19, size=12.2, align="right", width=82)
+        c.setFont("CN", 7.2); c.setFillColor(MUTED); c.drawRightString(x+w-14, y+7, engagement_label)
+
+
+def upcoming_card(c, x, y, w, h, kicker, title_text, subtitle):
+    c.setFillColor(Color(1,1,1,alpha=.36))
+    c.setStrokeColor(PINK)
+    c.setLineWidth(1)
+    c.setDash(3,3)
+    c.roundRect(x,y,w,h,12,fill=1,stroke=1)
+    c.setDash()
+    eyebrow(c,kicker,x+24,y+h-38,size=8.5,tracking=1.35)
+    if any('\u4e00' <= ch <= '\u9fff' for ch in title_text):
+        c.setFont("CNDisplay",30)
+    else:
+        c.setFont("Times-Bold",32)
+    c.setFillColor(INK)
+    c.drawString(x+24,y+h-88,title_text)
+    c.setFont("CN",11); c.setFillColor(PINK_DARK); c.drawString(x+24,y+h-116,subtitle)
+    c.setFont("Times-Roman",18); c.setFillColor(INK); c.drawString(x+24,y+34,"IS COMING SOON")
+
+
 def metric_box(c, x,y,w,h,value,label,note=""):
     rounded_box(c,x,y,w,h,fill=PAPER,stroke=LINE,radius=10)
     c.setFillColor(SOFT_PINK)
@@ -297,9 +338,9 @@ def build():
     c.setFont("CNDisplay",49); c.setFillColor(INK); c.drawString(52,350,"法嘉致富")
     c.setFont("CNDisplay",26); c.drawString(52,305,"｜星遇企划档案")
     draw_text(c,"不要轻视每一次遇见的威力。",52,240,390,font="CN",size=15,color=INK,leading=24)
-    c.setFont("CN",10); c.setFillColor(MUTED); c.drawRightString(440,210,"——法宣阁")
+    signature_badge(c,340,198,"法宣阁",100)
     draw_text(c,"无论你在追逐什么，都请记得停下来抬头看看，\n“天上有颗最亮的星星”它因为你而存在。",52,165,390,font="CN",size=12,color=INK,leading=22)
-    c.setFont("CN",10); c.setFillColor(MUTED); c.drawRightString(440,86,"——贺嘉述")
+    signature_badge(c,340,72,"贺嘉述",100)
     footer(c,page); c.showPage(); page+=1
 
     # 2 overview
@@ -314,7 +355,7 @@ def build():
         ("115万+","代表性抖音共创内容获赞","多条突破10万点赞"),
         ("2项","已公开双人品牌合作身份","阿芙 · 方里"),
     ]): metric_box(c,48+i*218,330,200,102,v,l,note)
-    draw_text(c,"法嘉致富，取自法宣阁、贺嘉述名字中的“法”与“嘉”二字，搭配“致富”寓意二人相伴顺遂、前程向好。\n\n两人因共同出演《双程》副 CP 而受到广泛关注，粉丝名为小发夹，应援色为粉金色。\n\n沉稳细腻与灵动表达形成鲜明互补，展现出自然互动、双向托底和强烈的关系叙事能力。",48,285,390,font="CN",size=11.2,color=INK,leading=20,max_lines=10)
+    draw_text(c,"法嘉致富，取自法宣阁、贺嘉述名字中的“法”与“嘉”二字，搭配“致富”寓意二人相伴顺遂、前程向好。\n\n两人因共同出演《双程》副CP而受到广泛关注，粉丝名为小发夹，取自“法嘉”谐音，应援色为粉金色。\n\n法宣阁的沉稳细腻与贺嘉述的灵动表达，无论在公开活动、双人直播、舞台演出与内容呈现中，形成鲜明互补，展现出自然互动、双向托底和强烈的关系叙事能力。",48,285,390,font="CN",size=10.4,color=INK,leading=18,max_lines=13)
     draw_img(c,"assets/double-helix-official-duo.webp",470,52,290,255,"cover",radius=8)
     draw_img(c,"assets/double-helix-faxuange.jpg",770,181,138,126,"cover",radius=6)
     draw_img(c,"assets/double-helix-hejiashu.jpg",770,52,138,126,"cover",radius=6)
@@ -324,9 +365,9 @@ def build():
     new_page(c,page)
     title(c,"个人信息","INDIVIDUAL PROFILES")
     profile_card(c,36,55,430,350,"assets/faxuange.webp","法宣阁","FAXUANGE","沉稳控场｜细腻表达｜可靠陪伴｜反差少年感",[
-        ("生日","1998.07.23 · 狮子座"),("MBTI","ISFJ · 动物塑：大金毛"),("毕业院校","上海师范大学表演系"),("影视作品","《双程》饰秦朗；《这次换我先回头》饰江一霖"),("音乐作品","《小英雄》《让我带你逃跑》")])
+        ("生日","1998.07.23 · 狮子座"),("MBTI","ISFJ"),("动物塑","大金毛"),("毕业院校","上海师范大学表演系"),("影视作品","《双程》饰秦朗；《这次换我先回头》饰江一霖"),("音乐作品","《小英雄》《让我带你逃跑》")])
     profile_card(c,494,55,430,350,"assets/hejiashu-jan.jpg","贺嘉述","HEJIASHU","灵动表达｜快速反应｜镜头表现力｜年轻时尚感",[
-        ("生日","2004.10.10 · 天秤座"),("MBTI","ENFP · 动物塑：小老虎"),("毕业院校","浙江工业大学播音与主持艺术专业"),("影视作品","《双程》饰程亦晨"),("音乐作品","《小英雄》《暴走大象》")])
+        ("生日","2004.10.10 · 天秤座"),("MBTI","ENFP"),("动物塑","小老虎"),("毕业院校","浙江工业大学播音与主持艺术专业"),("影视作品","《双程》饰程亦晨"),("音乐作品","《小英雄》《暴走大象》")])
     c.showPage(); page+=1
 
     # 4 works
@@ -338,35 +379,38 @@ def build():
     work_card(c,488,66,430,160,"assets/song-baozou.webp","个人音乐 · 贺嘉述","《暴走大象》","两颗心相遇的刹那，宇宙间一切的规则都骤然失序。","https://i.y.qq.com/v8/playsong.html?songid=688913973")
     c.showPage(); page+=1
 
-    # 5 social douyin
+    # 5 official accounts - Douyin and all other public platforms merged into one page
     new_page(c,page)
-    title(c,"官方账号｜抖音","OFFICIAL SOCIAL ACCOUNTS · DOUYIN")
+    title(c,"官方账号｜全平台","OFFICIAL SOCIAL ACCOUNTS · ALL PLATFORMS",cn_size=36)
     d=platforms["douyin"]
-    platform_profile(c,80,130,350,270,"assets/avatar-faxuange-main.webp","法宣阁",d["faxuange"]["followers"],d["faxuange"]["engagement"],DATA["sources"]["douyin"]["faxuange_profile"])
-    platform_profile(c,530,130,350,270,"assets/avatar-hejiashu-main.webp","贺嘉述",d["hejiashu"]["followers"],d["hejiashu"]["engagement"],DATA["sources"]["douyin"]["hejiashu_profile"])
-    data_date = DATA.get("updated", "2026-08-06").replace("-", ".")
-    c.setFont("CN",10); c.setFillColor(MUTED); c.drawCentredString(W/2,85,f"粉丝与累计获赞均来自平台公开主页，PDF 数据生成日：{data_date}")
-    c.showPage(); page+=1
-
-    # 6 social matrix
-    new_page(c,page)
-    title(c,"官方账号｜多平台","OFFICIAL SOCIAL ACCOUNTS · MULTI-PLATFORM")
-    platforms_order=[("微博","weibo",["faxuange","hejiashu","jewelrybox"]),("小红书","xhs",["faxuange","hejiashu","jewelrybox"]),("Instagram","instagram",["faxuange","hejiashu","jewelrybox"])]
+    # Large Douyin row
+    for x,u,name,img in [
+        (48,"faxuange","法宣阁","assets/avatar-faxuange-main.webp"),
+        (494,"hejiashu","贺嘉述","assets/avatar-hejiashu-main.webp"),
+    ]:
+        rounded_box(c,x,290,418,118,fill=PAPER,stroke=LINE,radius=10)
+        c.setFillColor(SOFT_PINK); c.roundRect(x+1,353,416,54,9,fill=1,stroke=0)
+        draw_img(c,img,x+18,326,68,68,"cover",radius=34)
+        c.setFont("CNDisplay",17); c.setFillColor(INK); c.drawString(x+103,374,name)
+        c.setFont("Helvetica",8); c.setFillColor(PINK_DARK); c.drawString(x+103,357,"DOUYIN")
+        draw_metric_value(c,fmt(d[u]["followers"]),x+112,315,size=20)
+        c.setFont("CN",8); c.setFillColor(MUTED); c.drawString(x+112,300,"粉丝")
+        draw_metric_value(c,fmt(d[u]["engagement"]),x+270,315,size=20)
+        c.setFont("CN",8); c.setFillColor(MUTED); c.drawString(x+270,300,"累计获赞")
+    # Compact multi-platform matrix
+    platforms_order=[("微博","weibo"),("小红书","xhs"),("Instagram","instagram")]
     names={"faxuange":"法宣阁","hejiashu":"贺嘉述","jewelrybox":"小发夹的首饰盒"}
     imgs={"faxuange":"assets/avatar-faxuange-main.webp","hejiashu":"assets/avatar-hejiashu-main.webp","jewelrybox":"assets/avatar-jewelrybox.webp"}
-    y_rows=[315,185,55]
-    for (label,key,users),yy in zip(platforms_order,y_rows):
-        c.setFont("CNDisplay",18); c.setFillColor(INK); c.drawString(48,yy+82,label)
+    users=["faxuange","hejiashu","jewelrybox"]
+    y_rows=[205,125,45]
+    for (label,key),yy in zip(platforms_order,y_rows):
+        c.setFont("CNDisplay",15); c.setFillColor(INK); c.drawString(48,yy+28,label)
         for j,u in enumerate(users):
-            x=165+j*255
-            rounded_box(c,x,yy,230,104,fill=PAPER,stroke=LINE,radius=8)
-            draw_img(c,imgs[u],x+14,yy+24,56,56,"cover",radius=28)
-            c.setFont("CN",10.5); c.setFillColor(INK); c.drawString(x+82,yy+68,names[u])
-            draw_metric_value(c,fmt(platforms[key][u]["followers"]),x+82,yy+39,size=15)
-            c.setFont("CN",8); c.setFillColor(MUTED); c.drawString(x+82,yy+23,"粉丝")
-            if "engagement" in platforms[key][u]:
-                draw_metric_value(c,fmt(platforms[key][u]["engagement"]),x+128,yy+39,size=12.5,align="right",width=86)
-                c.setFont("CN",7.5); c.setFillColor(MUTED); c.drawRightString(x+214,yy+23,"互动")
+            x=150+j*255
+            item=platforms[key][u]
+            compact_social_card(c,x,yy,232,64,imgs[u],names[u],item["followers"],item.get("engagement"),"互动")
+    data_date = DATA.get("updated", "2026-08-06").replace("-", ".")
+    c.setFont("CN",8.5); c.setFillColor(MUTED); c.drawRightString(910,27,f"数据来自各平台公开主页 · {data_date}")
     c.showPage(); page+=1
 
     # 7 platform overview
@@ -450,16 +494,12 @@ def build():
     c.drawCentredString(805,38,"官方直播")
     c.showPage(); page+=1
 
-    # 12 LEECN coming soon
+    # Upcoming page - LEECN and ARENA receive equal visual weight
     gradient(c, SOFT_PINK, SOFT_GOLD)
-    eyebrow(c,"BUSINESS COOPERATION · BEAUTY / NEW SEQUENCE",58,450,size=10,tracking=1.8)
-    c.setFont("Times-Bold",46); c.setFillColor(INK); c.drawString(58,355,"LEECN")
-    c.setFont("CNDisplay",34); c.drawString(238,358,"莉肯")
-    c.setFont("CN",12); c.setFillColor(PINK_DARK); c.drawString(60,310,"新序美学大使")
-    c.setStrokeColor(PINK); c.setLineWidth(1); c.setDash(3,3); c.roundRect(58,120,844,128,12,fill=0,stroke=1); c.setDash()
-    eyebrow(c,"UPCOMING BRAND COOPERATION",85,198,size=9,tracking=1.5)
-    c.setFont("Times-Bold",28); c.setFillColor(INK); c.drawString(410,175,"LEECN")
-    c.setFont("Times-Roman",19); c.drawString(530,180,"IS COMING SOON")
+    eyebrow(c,"UPCOMING",58,450,size=10,tracking=1.8)
+    c.setFont("CNDisplay",38); c.setFillColor(INK); c.drawString(58,390,"即将公开")
+    upcoming_card(c,58,105,398,230,"BRAND COOPERATION","LEECN 莉肯","新序美学大使")
+    upcoming_card(c,504,105,398,230,"EDITORIAL","ARENA","UPCOMING EDITORIAL")
     footer(c,page); c.showPage(); page+=1
 
     # 13 V generation
@@ -487,10 +527,7 @@ def build():
     draw_img(c,"assets/mag-hejiashu-fresh-2.webp",704,165,165,245,"cover",radius=6)
     c.setFont("CNDisplay",20); c.setFillColor(INK); c.drawString(532,128,"风尚志 Fresh｜贺嘉述")
     draw_text(c,"旷野为境，日光为裳。置身自然光影之中，干净灵动间自带少年元气。",532,100,335,font="CN",size=9.5,color=MUTED,leading=15,max_lines=3)
-    c.setStrokeColor(PINK); c.setDash(3,3); c.roundRect(46,38,823,40,8,fill=0,stroke=1); c.setDash()
-    eyebrow(c,"UPCOMING EDITORIAL",68,53,size=8,tracking=1.4)
-    c.setFont("Times-Bold",18); c.setFillColor(INK); c.drawString(395,49,"ARENA")
-    c.setFont("Times-Roman",12); c.drawString(477,52,"IS COMING SOON")
+    # ARENA is presented with equal weight beside LEECN on the dedicated upcoming page.
     c.showPage(); page+=1
 
     # 15 concert - editorial layout with a dedicated text panel (no image/text overlap)
@@ -502,19 +539,19 @@ def build():
     c.setFont("CN",10); c.setFillColor(PINK_DARK); c.drawString(324,174,"曼谷 · Thunder Dome")
     c.setFont("CNDisplay",18); c.setFillColor(INK); c.drawString(324,143,"宿命回响，只为你们轰鸣")
     draw_text(c,"每段旋律，都是双程路上心与心的交织；每次相聚，都藏着未说尽的温柔与执念。\n不必开口，曲调自有归处。",324,113,320,font="CN",size=10.2,color=INK,leading=18,max_lines=5)
-    draw_img(c,"assets/concert-live-3.webp",683,58,229,144,"cover",radius=8)
+    draw_img(c,"assets/concert-rehearsal-v2.webp",683,58,229,144,"cover",radius=8)
     c.showPage(); page+=1
 
     # 16 fan meeting - same safe editorial grid
     new_page(c,page)
     title(c,"「宣你述说」双人见面会","LIVE EVENTS · 2026.07.26",cn_size=31)
     draw_img(c,"assets/fanmeeting-v2.jpg",48,58,224,338,"contain",radius=8)
-    draw_img(c,"assets/fanmeeting-live-1.webp",302,222,610,176,"cover",radius=8)
+    draw_img(c,"assets/fanmeeting-live-2.webp",302,222,610,176,"cover",radius=8)
     rounded_box(c,302,58,365,144,fill=CREAM,stroke=LINE,radius=10)
     c.setFont("CN",10); c.setFillColor(PINK_DARK); c.drawString(324,174,"曼谷 · LIDO CONNECT HALL 3（2F）")
     c.setFont("CNDisplay",18); c.setFillColor(INK); c.drawString(324,143,"以“宣”为名，以“述”为约")
     draw_text(c,"这既是两人名字的巧妙交织，也代表一份面向所有陪伴者的诚挚邀请。\n来听他们说，也来对他们说。",324,113,320,font="CN",size=10.2,color=INK,leading=18,max_lines=5)
-    draw_img(c,"assets/fanmeeting-live-2.webp",683,58,229,144,"cover",radius=8)
+    draw_img(c,"assets/fanmeeting-live-1.webp",683,58,229,144,"cover",radius=8)
     c.showPage(); page+=1
 
     # 17 legal/contact
@@ -524,12 +561,10 @@ def build():
     rounded_box(c,58,190,844,150,fill=Color(1,1,1,alpha=.72),stroke=LINE,radius=10)
     legal="本网站内容用于持续更新与信息发布，PDF 文件仅供合作交流与非商业用途使用。\n所有资料严禁用于商业销售、有偿传播或任何营利性活动，未经书面授权不得转售或二次分发。\n本方保留对违规使用行为追究法律责任的权利。"
     draw_text(c,legal,82,305,795,font="CN",size=12,color=INK,leading=26,max_lines=6)
-    c.setFont("CNDisplay",25); c.setFillColor(INK); c.drawString(58,130,"合作建联")
-    draw_text(c,"本文所涉及的具体合作身份、交付形式及执行方案等相关事宜，仅供初步沟通与参考之用，最终内容均以米椒娱乐官方正式沟通及书面确认为准。",58,100,650,font="CN",size=10.5,color=INK,leading=18,max_lines=4)
-    rounded_box(c,730,65,170,58,fill=PAPER,stroke=PINK,radius=10)
-    c.setFont("CN",14); c.setFillColor(INK); c.drawCentredString(815,88,"联系邮箱")
-    hyperlink(c,"mailto:mejoymedia@foxmail.com",730,65,170,58)
-    c.setFont("Helvetica",10); c.setFillColor(MUTED); c.drawString(58,45,"mejoymedia@foxmail.com")
+    rounded_box(c,155,62,650,92,fill=Color(1,1,1,alpha=.82),stroke=PINK,radius=14,lw=1.2)
+    c.setFont("CN",11); c.setFillColor(PINK_DARK); c.drawCentredString(480,126,"合作联系邮箱")
+    c.setFont("Helvetica-Bold",23); c.setFillColor(INK); c.drawCentredString(480,88,"mejoymedia@foxmail.com")
+    hyperlink(c,"mailto:mejoymedia@foxmail.com",155,62,650,92)
     footer(c,page); c.showPage()
 
     c.save()
