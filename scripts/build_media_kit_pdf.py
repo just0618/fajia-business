@@ -15,7 +15,7 @@ from reportlab.pdfgen import canvas
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
 DATA = json.loads((ASSETS / "social-data.json").read_text(encoding="utf-8"))
-OUT = ROOT / "downloads" / "fajia-business-media-kit-v0.31.pdf"
+OUT = ROOT / "downloads" / "fajia-business-media-kit-v0.32.pdf"
 CACHE = ROOT / ".pdf-cache"
 CACHE.mkdir(exist_ok=True)
 OUT.parent.mkdir(exist_ok=True)
@@ -401,14 +401,22 @@ def build():
     platforms_order=[("微博","weibo"),("小红书","xhs"),("Instagram","instagram")]
     names={"faxuange":"法宣阁","hejiashu":"贺嘉述","jewelrybox":"小发夹的首饰盒"}
     imgs={"faxuange":"assets/avatar-faxuange-main.webp","hejiashu":"assets/avatar-hejiashu-main.webp","jewelrybox":"assets/avatar-jewelrybox.webp"}
+    platform_imgs={
+        "xhs": {
+            "faxuange":"assets/avatar-faxuange-xhs.webp",
+            "hejiashu":"assets/avatar-hejiashu-xhs.webp",
+            "jewelrybox":"assets/avatar-jewelrybox.webp",
+        }
+    }
     users=["faxuange","hejiashu","jewelrybox"]
     y_rows=[205,125,45]
     for (label,key),yy in zip(platforms_order,y_rows):
         c.setFont("CNDisplay",15); c.setFillColor(INK); c.drawString(48,yy+28,label)
+        current_imgs = platform_imgs.get(key, imgs)
         for j,u in enumerate(users):
             x=150+j*255
             item=platforms[key][u]
-            compact_social_card(c,x,yy,232,64,imgs[u],names[u],item["followers"],item.get("engagement"),"互动")
+            compact_social_card(c,x,yy,232,64,current_imgs[u],names[u],item["followers"],item.get("engagement"),"互动")
     data_date = DATA.get("updated", "2026-08-06").replace("-", ".")
     c.setFont("CN",8.5); c.setFillColor(MUTED); c.drawRightString(910,27,f"数据来自各平台公开主页 · {data_date}")
     c.showPage(); page+=1

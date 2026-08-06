@@ -68,7 +68,7 @@ jobs:
         if: steps.metrics.outputs.changed == 'true'
         run: |
           python scripts/build_media_kit_pdf.py
-          test -s downloads/fajia-business-media-kit-v0.31.pdf
+          test -s downloads/fajia-business-media-kit-v0.32.pdf
 
       - name: Upload diagnostics when present
         if: always()
@@ -84,7 +84,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/social-data.json downloads/fajia-business-media-kit-v0.31.pdf
+          git add assets/social-data.json downloads/fajia-business-media-kit-v0.32.pdf
           if git diff --cached --quiet; then
             echo "No staged changes"
             exit 0
