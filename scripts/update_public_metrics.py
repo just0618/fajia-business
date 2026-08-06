@@ -304,6 +304,24 @@ def extract_labeled_number(text: str, label: str) -> int | None:
     return parse_human_number(token) if token is not None else None
 
 
+def extract_number_after_label(text: str, label: str) -> int | None:
+    """Read a counter rendered *after* its label.
+
+    Douyin profile rows are typically rendered as ``关注 241 粉丝 33.0万``.
+    The generic helper above also accepts ``number + label`` because Weibo uses
+    that order. Reusing it for Douyin can therefore mistake the preceding follow
+    count (241) for the follower count. This directional parser deliberately
+    accepts only ``label + number``.
+    """
+    normalized = re.sub(r"\s+", " ", text or "").strip()
+    match = re.search(
+        rf"{re.escape(label)}\s*[:：]?\s*({NUMBER_TOKEN_PATTERN})",
+        normalized,
+        flags=re.IGNORECASE,
+    )
+    return parse_human_number(match.group(1)) if match else None
+
+
 def _read_locator_text(page: Any, selector: str, *, prefer_last: bool = False) -> str:
     locator = page.locator(selector)
     if not locator.count():
@@ -322,23 +340,21 @@ def _read_douyin_profile_metric(
 ) -> tuple[int | None, str]:
     """Read a Douyin profile counter without relying on hashed class names.
 
-    Douyin may render more than one semantic node. Some hidden/early nodes contain
-    only the label (for example ``粉丝``), while the visible node contains a sibling
-    number. We therefore inspect all matching nodes from last to first, then inspect
-    their direct children and nearby parents. This keeps the parser working across
-    both known DOM layouts:
-
-    ``<div data-e2e=...><div>粉丝</div><div>22.4万</div></div>``
-
-    and layouts where ``data-e2e`` is attached only to the label element.
+    The important detail is direction: Douyin renders profile metrics as
+    ``label -> number`` (for example ``关注 241 粉丝 33.0万``). A generic
+    ``number <-> label`` parser can incorrectly bind 241 to ``粉丝``. We only
+    accept the number that follows the requested label, and prefer visible
+    semantic nodes before hidden duplicates.
     """
     roots = page.locator(selector)
     diagnostic_texts: list[str] = []
 
-    for index in range(roots.count() - 1, -1, -1):
+    indices = list(range(roots.count()))
+    indices.sort(key=lambda i: 0 if roots.nth(i).is_visible() else 1)
+
+    for index in indices:
         root = roots.nth(index)
         candidates = [
-            root.locator(":scope > div").last,
             root,
             root.locator("xpath=..").first,
             root.locator("xpath=../..").first,
@@ -355,13 +371,25 @@ def _read_douyin_profile_metric(
             if raw_text not in diagnostic_texts:
                 diagnostic_texts.append(raw_text)
 
-            # A numeric child such as ``22.4万`` can be parsed directly. A parent
-            # such as ``粉丝\n22.4万`` is parsed using the visible label.
-            number = parse_human_number(raw_text)
-            if number is None:
-                number = extract_labeled_number(raw_text, label)
+            # Never accept a bare nearby number. Require the requested label and
+            # bind it to the counter rendered after that label. This prevents the
+            # preceding ``关注`` count from being stored as ``粉丝``.
+            if label not in raw_text:
+                continue
+            number = extract_number_after_label(raw_text, label)
             if number is not None:
                 return number, raw_text
+
+            # Some compact wrappers contain only this one label and counter but
+            # place the number first. Keep that layout as a narrow fallback; do
+            # not use it on a whole row containing multiple metric labels.
+            known_labels = sum(
+                visible_label in raw_text for visible_label in ("关注", "粉丝", "获赞")
+            )
+            if known_labels <= 1:
+                number = extract_labeled_number(raw_text, label)
+                if number is not None:
+                    return number, raw_text
 
     return None, " | ".join(diagnostic_texts)
 
@@ -538,6 +566,11 @@ def browser_collect_profiles(
                 page.goto(url, wait_until="domcontentloaded", timeout=60_000)
                 page.wait_for_timeout(6_000)
 
+                following, follow_text = _read_douyin_profile_metric(
+                    page,
+                    '[data-e2e="user-info-follow"]',
+                    "关注",
+                )
                 followers, fans_text = _read_douyin_profile_metric(
                     page,
                     '[data-e2e="user-info-fans"]',
@@ -548,6 +581,16 @@ def browser_collect_profiles(
                     '[data-e2e="user-info-like"]',
                     "获赞",
                 )
+
+                # Final guard for a known failure mode: if the follower result is
+                # identical to the following count, recover the explicitly labeled
+                # follower value from the visible profile text instead of writing it.
+                if followers is not None and following is not None and followers == following:
+                    body_text = _read_locator_text(page, "body")
+                    corrected_followers = extract_number_after_label(body_text, "粉丝")
+                    if corrected_followers is not None and corrected_followers != following:
+                        followers = corrected_followers
+                        fans_text = f"{fans_text} | corrected_from_body={corrected_followers}"
 
                 if followers is None:
                     followers, html_fans_text = _read_metric_from_rendered_html(
@@ -579,7 +622,8 @@ def browser_collect_profiles(
                     _write_debug(
                         page,
                         f"profile-douyin-{name}",
-                        f"fans_text={fans_text!r}\nlikes_text={likes_text!r}\n"
+                        f"follow_text={follow_text!r}\nfans_text={fans_text!r}\n"
+                        f"likes_text={likes_text!r}\n"
                         f"captured={json.dumps(captured, ensure_ascii=False)}",
                     )
             except PlaywrightTimeoutError as exc:

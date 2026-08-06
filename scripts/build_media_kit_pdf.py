@@ -15,7 +15,7 @@ from reportlab.pdfgen import canvas
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
 DATA = json.loads((ASSETS / "social-data.json").read_text(encoding="utf-8"))
-OUT = ROOT / "downloads" / "fajia-business-media-kit-v0.28.pdf"
+OUT = ROOT / "downloads" / "fajia-business-media-kit-v0.30.pdf"
 CACHE = ROOT / ".pdf-cache"
 CACHE.mkdir(exist_ok=True)
 OUT.parent.mkdir(exist_ok=True)
@@ -201,7 +201,7 @@ def signature_badge(c, x, y, name, w=100):
     c.roundRect(x, y, w, 25, 12, fill=1, stroke=1)
     c.setFont("CNDisplay", 12.5)
     c.setFillColor(INK)
-    c.drawCentredString(x + w/2, y + 7, f"——{name}")
+    c.drawCentredString(x + w/2, y + 7, name)
 
 
 def compact_social_card(c, x, y, w, h, img, name, followers, engagement=None, engagement_label="互动"):

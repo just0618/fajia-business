@@ -1,10 +1,21 @@
-from update_public_metrics import extract_four_metric_row, parse_human_number, recursively_find_stats
+from update_public_metrics import (
+    extract_four_metric_row,
+    extract_number_after_label,
+    parse_human_number,
+    recursively_find_stats,
+)
 
 
 def main() -> None:
     assert parse_human_number("12.6万") == 126000
     assert parse_human_number("1.1万") == 11000
     assert parse_human_number("5,469") == 5469
+    # Douyin profile rows place the counter after the label. The preceding 241
+    # is the following count and must never be mistaken for followers.
+    profile_row = "关注 241 粉丝 33.0万 获赞 560.2万"
+    assert extract_number_after_label(profile_row, "关注") == 241
+    assert extract_number_after_label(profile_row, "粉丝") == 330000
+    assert extract_number_after_label(profile_row, "获赞") == 5602000
     assert extract_four_metric_row(["12.6万", "5469", "5314", "6942"]) == {
         "likes": 126000,
         "comments": 5469,

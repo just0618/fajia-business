@@ -1,4 +1,4 @@
-name: Update public metrics
+name: Update public metrics and PDF
 
 on:
   workflow_dispatch:
@@ -7,46 +7,87 @@ on:
         description: "Save browser screenshots/HTML for diagnosis"
         required: false
         default: "true"
-
   schedule:
-    - cron: "20 4 * * *" # daily, 12:20 Beijing time
+    - cron: "20 4 * * *" # daily, about 12:20 Beijing time
+
 permissions:
   contents: write
+
+concurrency:
+  group: update-public-metrics-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+
       - name: Install scraper dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install requests playwright
           python -m playwright install --with-deps chromium
+
       - name: Collect public metrics
         run: |
           DEBUG_ARG=""
           if [ "${{ github.event.inputs.debug }}" = "true" ]; then DEBUG_ARG="--debug"; fi
           python scripts/update_public_metrics.py $DEBUG_ARG
+
+      - name: Detect public data changes
+        id: metrics
+        shell: bash
+        run: |
+          if git diff --quiet -- assets/social-data.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No public metric changes detected. PDF rebuild will be skipped."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Public metrics changed. The PDF will be rebuilt from the new JSON data."
+          fi
+
+      - name: Install PDF dependencies and Chinese fonts
+        if: steps.metrics.outputs.changed == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            fonts-arphic-gbsn00lp \
+            fonts-arphic-gkai00mp
+          python -m pip install reportlab pillow
+
+      - name: Rebuild latest PDF
+        if: steps.metrics.outputs.changed == 'true'
+        run: |
+          python scripts/build_media_kit_pdf.py
+          test -s downloads/fajia-business-media-kit-v0.30.pdf
+
       - name: Upload diagnostics when present
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: social-metric-debug-${{ github.run_number }}
           path: debug-social/
           if-no-files-found: ignore
           retention-days: 7
-      - name: Commit changed public data
+
+      - name: Commit updated data and PDF
+        if: steps.metrics.outputs.changed == 'true'
         run: |
-          if git diff --quiet -- assets/social-data.json; then
-            echo "No data changes"
-            exit 0
-          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/social-data.json
-          git commit -m "chore: update public social metrics"
+          git add assets/social-data.json downloads/fajia-business-media-kit-v0.30.pdf
+          if git diff --cached --quiet; then
+            echo "No staged changes"
+            exit 0
+          fi
+          git commit -m "chore: update public metrics and media kit PDF"
           git push
