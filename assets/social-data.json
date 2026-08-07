@@ -20,17 +20,17 @@
     "douyin": {
       "faxuange": {
         "followers": 227000,
-        "engagement": 3034000
+        "engagement": 3046000
       },
       "hejiashu": {
-        "followers": 334000,
-        "engagement": 5679000
+        "followers": 335000,
+        "engagement": 5704000
       }
     },
     "weibo": {
       "faxuange": {
         "followers": 209000,
-        "engagement": 922000
+        "engagement": 923000
       },
       "hejiashu": {
         "followers": 281000,
@@ -87,8 +87,8 @@
       },
       "item03": {
         "url": "https://www.douyin.com/note/7670451363546191754",
-        "likes": 385000,
-        "comments": 20000,
+        "likes": 391000,
+        "comments": 21000,
         "favorites": 21000,
         "shares": 46000,
         "label": "还能遇见你"
@@ -98,7 +98,7 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11059,
+        "likes": 11062,
         "comments": 1235,
         "reposts": 2904,
         "label": "喜欢你"
@@ -106,15 +106,15 @@
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 20451,
-        "comments": 3063,
+        "likes": 20471,
+        "comments": 3064,
         "reposts": 4659,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
         "status_id": "5323195886345801",
         "video_url": "https://weibo.com/tv/show/1034:5323193712312362?from=old_pc_videoshow",
-        "likes": 10735,
+        "likes": 10741,
         "comments": 1322,
         "reposts": 848,
         "label": "专属于小发夹的礼物🎁",
@@ -125,8 +125,8 @@
   "summary": {
     "representativeDouyinLikes": 1150000,
     "brandCooperations": 2,
-    "artistFollowers3Platforms": 1125000,
-    "artistDouyinTotalLikes": 8713000
+    "artistFollowers3Platforms": 1126000,
+    "artistDouyinTotalLikes": 8750000
   },
-  "last_attempt": "2026-08-07T00:40:28+00:00"
+  "last_attempt": "2026-08-07T05:53:46+00:00"
 }
