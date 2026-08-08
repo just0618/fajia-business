@@ -7,6 +7,25 @@
 <meta content="法嘉致富｜星遇企划档案｜法宣阁×贺嘉述 品牌合作参考" name="description"/>
 <title>法嘉致富｜星遇企划档案｜法宣阁×贺嘉述</title>
 <link href="styles.css" rel="stylesheet"/>
+<!-- 腾讯云 RUM / Aegis：基础 PV、UV 与前端质量监控 -->
+<script src="https://tam.cdn-go.cn/aegis-sdk/latest/aegis.min.js"></script>
+<script>
+(function () {
+  try {
+    if (typeof Aegis === 'function') {
+      window.fajiaAegis = new Aegis({
+        id: 'nGak6IK2j7wGPmVGYV',
+        reportApiSpeed: false,
+        reportAssetSpeed: false,
+        spa: false,
+        hostUrl: 'https://rumt-zh.com'
+      });
+    }
+  } catch (error) {
+    // 监控 SDK 不应影响网站本身的正常访问。
+  }
+})();
+</script>
 </head>
 <body>
 <div class="preview-chip">数据采集截至 <span data-tminus-one>2026.08.04</span></div>
@@ -239,5 +258,6 @@
 <footer><div class="wrap"><span>FAJIA 法嘉致富</span><p>图片及数据使用范围需由委托方最终确认</p><span>© 2026 · V0.32</span></div></footer>
 <div aria-live="polite" id="toast" role="status"></div>
 <script src="script.js"></script>
+<script src="analytics.js"></script>
 </body>
 </html>
