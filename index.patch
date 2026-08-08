@@ -1,0 +1,31 @@
+--- /mnt/data/fajia_patch_work/index.html	2026-08-06 10:49:06.000000000 +0000
++++ /mnt/data/fajia_arena_preview/index.html	2026-08-08 03:26:59.676169076 +0000
+@@ -205,14 +205,24 @@
+ </div>
+ <div class="v-feature-copy v-feature-copy--below"><p class="eyebrow">DUO EDITORIAL</p><h3>V Generation 2026 VOL.3</h3><h4>《情愫四序》｜“旷野为境”双人封面</h4><p class="editorial-prose">一段关系，从开始到深处，究竟要走多久？<br/><br/>初识、试探、炽烈、沉淀。<br/>其实世间心意，自有时序生长。<br/><br/>这一次，我们把情愫的四种质地，慢慢说给你听。</p></div>
+ </article>
++<article class="v-feature-card v-feature-card--image-first arena-feature-card">
++<div class="arena-editorial-gallery">
++<figure><img alt="ARENA HOMME+ 双人封面一" src="assets/arena-cover-01.webp"/></figure>
++<figure><img alt="ARENA HOMME+ 双人封面二" src="assets/arena-cover-02.webp"/></figure>
++<figure><img alt="ARENA HOMME+ 双人封面三" src="assets/arena-cover-03.webp"/></figure>
++</div>
++<div class="v-feature-copy v-feature-copy--below">
++<p class="eyebrow">DUO EDITORIAL · ARENA HOMME+</p>
++<h3>ARENA HOMME+ 2026 AUG.</h3>
++<h4>双人封面｜To Be Continued</h4>
++<p class="editorial-prose">他沉稳直接，他敏感细腻，两颗并非相同的灵魂将一段故事互补而成。<br/><br/>是彼此救赎，更是并肩前行。<br/>人生路漫漫，荆棘也走成坦途，孤单被写成圆满。<br/>这是何其幸运，总有同频人在。</p>
++<a class="editorial-source-link" href="https://weibo.com/6523231129/5329595542012741" target="_blank" rel="noopener noreferrer">查看官方微博 ↗</a>
++</div>
++</article>
+ <article class="solo-editorial-combo">
+ <div class="solo-editorial-panel"><div class="solo-cover-pair"><img alt="法宣阁精彩OK单人杂志封面一" src="assets/mag-faxuange-ok-1.webp"/><img alt="法宣阁精彩OK单人杂志封面二" src="assets/mag-faxuange-ok-2.webp"/></div><div class="solo-copy"><p class="eyebrow">SOLO EDITORIAL · FAXUANGE</p><h3>精彩 OK!</h3><h4>法宣阁单人封面</h4><p>每一段新的旅程，总会从一次尝试开始。<br/>带着对世界的好奇，推开那扇通往未知的门，而属于他的故事，也由此翻开新的篇章。</p></div></div>
+ <div class="solo-editorial-panel"><div class="solo-cover-pair"><img alt="贺嘉述风尚志单人杂志封面一" src="assets/mag-hejiashu-fresh-1.webp"/><img alt="贺嘉述风尚志单人杂志封面二" src="assets/mag-hejiashu-fresh-2.webp"/></div><div class="solo-copy"><p class="eyebrow">SOLO EDITORIAL · HEJIASHU</p><h3>风尚志 Fresh</h3><h4>贺嘉述单人封面</h4><p>旷野为境，日光为裳。<br/>置身自然光影之中，干净灵动间自带少年元气。<br/>喧嚣退去，只剩下蝉鸣声、风声，和镜头里那个自由自在的他。</p></div></div>
+ </article>
+-<div class="mini-placeholder-card mini-placeholder-card--arena">
+-<span class="arena-kicker">UPCOMING EDITORIAL</span>
+-<div class="arena-message"><strong>ARENA</strong><span>IS COMING SOON</span></div>
+-</div>
+ </div>
+ </section>
+ <section class="wrap section-gap" id="events">
