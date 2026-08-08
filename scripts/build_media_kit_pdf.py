@@ -533,8 +533,6 @@ def build():
     draw_img(c,"assets/arena-cover-02.webp",710,132,200,258,"contain",radius=6)
     c.setFont("CN",10.5); c.setFillColor(INK); c.drawString(50,92,"双人封面｜To Be Continued")
     draw_text(c,"他沉稳直接，他敏感细腻，两颗并非相同的灵魂将一段故事互补而成。 是彼此救赎，更是并肩前行。\n人生路漫漫，荆棘也走成坦途，孤单被写成圆满。 这是何其幸运，总有同频人在。",50,72,720,font="CN",size=8.3,color=MUTED,leading=13,max_lines=3)
-    c.setFont("CN",8.5); c.setFillColor(BLUE); c.drawRightString(910,34,"查看官方微博 ↗")
-    hyperlink(c,"https://weibo.com/6523231129/5329595542012741",790,20,120,28)
     c.showPage(); page+=1
 
     # 15 solo editorials
