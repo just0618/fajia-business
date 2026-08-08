@@ -502,12 +502,11 @@ def build():
     c.drawCentredString(805,38,"官方直播")
     c.showPage(); page+=1
 
-    # Upcoming page - LEECN and ARENA receive equal visual weight
+    # Upcoming page - LEECN remains the current upcoming cooperation.
     gradient(c, SOFT_PINK, SOFT_GOLD)
     eyebrow(c,"UPCOMING",58,450,size=10,tracking=1.8)
     c.setFont("CNDisplay",38); c.setFillColor(INK); c.drawString(58,390,"即将公开")
-    upcoming_card(c,58,105,398,230,"BRAND COOPERATION","LEECN 莉肯","新序美学大使")
-    upcoming_card(c,504,105,398,230,"EDITORIAL","ARENA","UPCOMING EDITORIAL")
+    upcoming_card(c,150,105,660,230,"BRAND COOPERATION","LEECN 莉肯","新序美学大使")
     footer(c,page); c.showPage(); page+=1
 
     # 13 V generation
@@ -522,7 +521,23 @@ def build():
     draw_text(c,"一段关系，从开始到深处，究竟要走多久？  初识、试探、炽烈、沉淀。其实世间心意，自有时序生长。",500,112,410,font="CN",size=9.5,color=MUTED,leading=16,max_lines=4)
     c.showPage(); page+=1
 
-    # 14 solo + arena
+    # 14 ARENA HOMME+ duo editorial
+    new_page(c,page,bg=SOFT_PINK)
+    eyebrow(c,"DUO EDITORIAL",50,500,size=10,tracking=1.8)
+    c.setFont("Times-Bold",28); c.setFillColor(INK); c.drawString(50,452,"ARENA HOMME+ 2026 AUG.")
+    # Four ARENA visuals in the same order as the website:
+    # arena1 -> arena cover 1 -> arena cover 3 -> arena cover 2
+    draw_img(c,"assets/arena-preorder.webp",50,132,200,258,"contain",radius=6)
+    draw_img(c,"assets/arena-cover-01.webp",270,132,200,258,"contain",radius=6)
+    draw_img(c,"assets/arena-cover-03.webp",490,132,200,258,"contain",radius=6)
+    draw_img(c,"assets/arena-cover-02.webp",710,132,200,258,"contain",radius=6)
+    c.setFont("CN",10.5); c.setFillColor(INK); c.drawString(50,92,"双人封面｜To Be Continued")
+    draw_text(c,"他沉稳直接，他敏感细腻，两颗并非相同的灵魂将一段故事互补而成。 是彼此救赎，更是并肩前行。\n人生路漫漫，荆棘也走成坦途，孤单被写成圆满。 这是何其幸运，总有同频人在。",50,72,720,font="CN",size=8.3,color=MUTED,leading=13,max_lines=3)
+    c.setFont("CN",8.5); c.setFillColor(BLUE); c.drawRightString(910,34,"查看官方微博 ↗")
+    hyperlink(c,"https://weibo.com/6523231129/5329595542012741",790,20,120,28)
+    c.showPage(); page+=1
+
+    # 15 solo editorials
     new_page(c,page,bg=SOFT_GOLD)
     title(c,"单人时尚资源","SOLO EDITORIAL")
     # left
@@ -535,7 +550,6 @@ def build():
     draw_img(c,"assets/mag-hejiashu-fresh-2.webp",704,165,165,245,"cover",radius=6)
     c.setFont("CNDisplay",20); c.setFillColor(INK); c.drawString(532,128,"风尚志 Fresh｜贺嘉述")
     draw_text(c,"旷野为境，日光为裳。置身自然光影之中，干净灵动间自带少年元气。",532,100,335,font="CN",size=9.5,color=MUTED,leading=15,max_lines=3)
-    # ARENA is presented with equal weight beside LEECN on the dedicated upcoming page.
     c.showPage(); page+=1
 
     # 15 concert - editorial layout with a dedicated text panel (no image/text overlap)
