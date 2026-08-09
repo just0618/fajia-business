@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-08",
+  "updated": "2026-08-09",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -19,26 +19,26 @@
   "platforms": {
     "douyin": {
       "faxuange": {
-        "followers": 229000,
-        "engagement": 3082000
+        "followers": 231000,
+        "engagement": 3119000
       },
       "hejiashu": {
-        "followers": 337000,
-        "engagement": 5755000
+        "followers": 339000,
+        "engagement": 5804000
       }
     },
     "weibo": {
       "faxuange": {
         "followers": 210000,
-        "engagement": 926000
+        "engagement": 941000
       },
       "hejiashu": {
-        "followers": 281000,
-        "engagement": 1319000
+        "followers": 282000,
+        "engagement": 1336000
       },
       "jewelrybox": {
         "followers": 37000,
-        "engagement": 324000
+        "engagement": 333000
       }
     },
     "xhs": {
@@ -87,10 +87,10 @@
       },
       "item03": {
         "url": "https://www.douyin.com/note/7670451363546191754",
-        "likes": 407000,
+        "likes": 426000,
         "comments": 22000,
-        "favorites": 22000,
-        "shares": 48000,
+        "favorites": 24000,
+        "shares": 51000,
         "label": "还能遇见你"
       }
     },
@@ -98,7 +98,7 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11085,
+        "likes": 11100,
         "comments": 1235,
         "reposts": 2906,
         "label": "喜欢你"
@@ -106,17 +106,17 @@
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 20554,
-        "comments": 3067,
-        "reposts": 4660,
+        "likes": 20627,
+        "comments": 3070,
+        "reposts": 4656,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
         "status_id": "5323195886345801",
         "video_url": "https://weibo.com/tv/show/1034:5323193712312362?from=old_pc_videoshow",
-        "likes": 10775,
-        "comments": 1322,
-        "reposts": 848,
+        "likes": 10834,
+        "comments": 1324,
+        "reposts": 852,
         "label": "专属于小发夹的礼物🎁",
         "url": "https://weibo.com/8344769962/5323195886345801"
       }
@@ -125,8 +125,8 @@
   "summary": {
     "representativeDouyinLikes": 1150000,
     "brandCooperations": 2,
-    "artistFollowers3Platforms": 1131000,
-    "artistDouyinTotalLikes": 8837000
+    "artistFollowers3Platforms": 1136000,
+    "artistDouyinTotalLikes": 8923000
   },
-  "last_attempt": "2026-08-08T05:13:14+00:00"
+  "last_attempt": "2026-08-09T05:21:43+00:00"
 }
