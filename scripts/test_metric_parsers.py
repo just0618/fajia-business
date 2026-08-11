@@ -74,6 +74,19 @@ def main() -> None:
         ]
     }
     assert recursively_find_stats(mixed_payload, "7664238615464070510") == {}
+
+    weibo_status_payload = {
+        "id": "5330103329363208",
+        "attitudes_count": 13000,
+        "comments_count": 1172,
+        "reposts_count": 1888,
+    }
+    assert recursively_find_stats(weibo_status_payload, "5330103329363208") == {
+        "likes": 13000,
+        "comments": 1172,
+        "reposts": 1888,
+    }
+
     print("parser tests passed")
 
 

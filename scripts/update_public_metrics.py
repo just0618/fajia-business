@@ -1315,42 +1315,43 @@ def main() -> int:
             item03[metric_key] = None
         changed = True
 
-    # V0.33 content migration: replace the former jewelrybox gift card with the
-    # latest co-created Weibo video. The supplied link is a video detail URL and
-    # does not expose a stable status_id in the URL, so clear the former post's
-    # counters once and let the browser collector repopulate them from the new
-    # detail page.
+    # V0.34 content migration: the previously supplied video.weibo.com URL was
+    # the video object (fid), not the canonical Weibo status URL. The canonical
+    # post is https://weibo.com/8348577978/5330103329363208. Keep the video fid as
+    # auxiliary metadata, but use the status_id and normal Weibo URL for metric
+    # collection so the standard public status endpoint can update likes,
+    # comments and reposts.
     weibo_item03 = data.setdefault("content", {}).setdefault("weibo", {}).setdefault("item03", {})
-    new_weibo_video_url = "https://video.weibo.com/show?fid=1034:5330100514652254"
-    if weibo_item03.get("url") != new_weibo_video_url:
-        weibo_item03.clear()
-        weibo_item03.update({
-            "video_fid": "5330100514652254",
-            "video_url": new_weibo_video_url,
-            "url": new_weibo_video_url,
-            "likes": None,
-            "comments": None,
-            "reposts": None,
-            "label": "后来我们有了夏天🍃🧩",
-        })
-        changed = True
-    else:
-        # Keep the migrated item normalized even if an earlier incremental
-        # package already changed only the URL. If a legacy status_id survived,
-        # it belongs to the former post and must never be queried for this video.
-        if weibo_item03.pop("status_id", None) is not None:
-            for metric_key in ("likes", "comments", "reposts"):
-                weibo_item03[metric_key] = None
+    canonical_weibo_url = "https://weibo.com/8348577978/5330103329363208"
+    canonical_status_id = "5330103329363208"
+    canonical_video_url = "https://video.weibo.com/show?fid=1034:5330100514652254"
+    normalized = {
+        "status_id": canonical_status_id,
+        "video_fid": "5330100514652254",
+        "video_url": canonical_video_url,
+        "url": canonical_weibo_url,
+        "label": "后来我们有了夏天🍃🧩",
+    }
+
+    identity_changed = (
+        str(weibo_item03.get("status_id") or "") != canonical_status_id
+        or weibo_item03.get("url") != canonical_weibo_url
+    )
+    for key, value in normalized.items():
+        if weibo_item03.get(key) != value:
+            weibo_item03[key] = value
             changed = True
-        normalized = {
-            "video_fid": "5330100514652254",
-            "video_url": new_weibo_video_url,
-            "label": "后来我们有了夏天🍃🧩",
-        }
-        for key, value in normalized.items():
-            if weibo_item03.get(key) != value:
-                weibo_item03[key] = value
+
+    # If this record is being migrated from the old video-only configuration,
+    # clear any potentially stale counters once. The normal Weibo status fetch
+    # below will repopulate the three metrics in the same run when accessible.
+    if identity_changed:
+        for metric_key in ("likes", "comments", "reposts"):
+            if weibo_item03.get(metric_key) is not None:
+                weibo_item03[metric_key] = None
                 changed = True
+        for metric_key in ("likes", "comments", "reposts"):
+            weibo_item03.setdefault(metric_key, None)
 
     sources = data.get("sources", {})
     platforms = data.get("platforms", {})
