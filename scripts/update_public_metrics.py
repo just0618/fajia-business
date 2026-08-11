@@ -151,10 +151,22 @@ def recursively_find_stats(node: Any, wanted_id: str | None = None) -> dict[str,
         if isinstance(value, dict):
             identifiers = {
                 str(value.get(key))
-                for key in ("aweme_id", "item_id", "note_id", "id", "mid")
+                for key in (
+                    "aweme_id", "item_id", "note_id", "id", "mid",
+                    "fid", "object_id", "media_id", "video_id", "oid",
+                )
                 if value.get(key) is not None
             }
-            is_exact_item = inside_exact_item or bool(wanted_id and wanted_id in identifiers)
+            def _matches_identifier(identifier: str) -> bool:
+                if not wanted_id:
+                    return False
+                # Weibo video identifiers are often serialized as
+                # ``1034:<numeric fid>`` while our stored ``video_fid`` keeps
+                # only the numeric portion. Match that suffix without accepting
+                # arbitrary substring collisions.
+                return identifier == wanted_id or identifier.endswith(":" + wanted_id)
+
+            is_exact_item = inside_exact_item or any(_matches_identifier(i) for i in identifiers)
 
             candidates: list[dict[str, Any]] = []
             for key in ("statistics", "stats", "stat", "status"):
@@ -242,6 +254,62 @@ def update_douyin_status_legacy(url: str, target: dict[str, Any]) -> bool:
         if key in stats:
             changed |= set_number(target, key, stats[key])
     return changed
+
+
+def extract_weibo_metric_row(texts: Iterable[str]) -> dict[str, int]:
+    """Parse a visible Weibo interaction row into repost/comment/like counts.
+
+    Supports both labeled text (``转发 1888 评论 1172 点赞 1.3万``) and
+    the compact three-value aria-label used by normal Weibo post footers
+    (``1888,1172,1.3万``). This is also used by ``video.weibo.com`` /
+    ``weibo.com/tv/show`` pages, whose public DOM is not identical to a
+    standard status page.
+    """
+    best: dict[str, int] = {}
+    for raw in texts:
+        text = re.sub(r"\s+", " ", raw or "").strip()
+        if not text:
+            continue
+        found: dict[str, int] = {}
+        first_number = re.search(NUMBER_TOKEN_PATTERN, text)
+        label_positions = [
+            pos for pos in (text.find("转发"), text.find("评论"), text.find("点赞"), text.find("赞"))
+            if pos >= 0
+        ]
+        labels_precede_numbers = bool(
+            first_number and label_positions and min(label_positions) < first_number.start()
+        )
+
+        def _directional(label: str) -> int | None:
+            if labels_precede_numbers:
+                return extract_number_after_label(text, label)
+            match = re.search(
+                rf"({NUMBER_TOKEN_PATTERN})\s*{re.escape(label)}", text, flags=re.IGNORECASE
+            )
+            return parse_human_number(match.group(1)) if match else None
+
+        reposts = _directional("转发")
+        comments = _directional("评论")
+        likes = _directional("点赞")
+        if likes is None:
+            likes = _directional("赞")
+        if reposts is not None:
+            found["reposts"] = reposts
+        if comments is not None:
+            found["comments"] = comments
+        if likes is not None:
+            found["likes"] = likes
+        if len(found) > len(best):
+            best = found
+        if len(found) == 3:
+            return found
+
+        parts = [part.strip() for part in re.split(r"[,，]", text)]
+        if len(parts) == 3:
+            values = [parse_human_number(part) for part in parts]
+            if all(value is not None for value in values):
+                return {"reposts": values[0], "comments": values[1], "likes": values[2]}
+    return best
 
 
 def extract_four_metric_row(texts: Iterable[str]) -> dict[str, int]:
@@ -1030,11 +1098,16 @@ def browser_collect(
                     payload = response.json()
                 except Exception:
                     return
-                stats = recursively_find_stats(payload, status_id or None)
-                # Weibo's three metrics may sit directly on the status dict.
-                # Video-only links may not expose a status_id; in that case the
-                # detail page response is scoped to the opened video, so an
-                # unscoped metric search is safer than reusing an unrelated id.
+                wanted_identifier = status_id or str(target.get("video_fid") or "")
+                stats = recursively_find_stats(payload, wanted_identifier or None)
+                # A video detail endpoint can omit its fid from nested metric
+                # objects even though the response itself belongs to the opened
+                # video. Only then allow an unscoped fallback, and only for
+                # clearly video/detail-shaped response URLs.
+                if len(stats) < 2 and not status_id and any(
+                    marker in lower_url for marker in ("video", "tv/show", "component", "media")
+                ):
+                    stats = recursively_find_stats(payload, None)
                 if len(stats) >= 2:
                     captured.update(stats)
 
@@ -1043,19 +1116,42 @@ def browser_collect(
                 page.goto(url, wait_until="domcontentloaded", timeout=60_000)
                 page.wait_for_timeout(6_000)
                 if len(captured) < 2:
-                    # The user's DevTools screenshot shows the public footer exposing
-                    # "转发,评论,点赞" as an aria-label, e.g. 2902,1234,1.1万.
+                    # Standard status pages expose a compact aria-label; TV/video
+                    # pages more often expose separate labeled controls. Collect
+                    # both forms and parse them through one conservative helper.
+                    candidates: list[str] = []
                     footers = page.locator("footer[aria-label]")
                     for index in range(footers.count()):
-                        label = footers.nth(index).get_attribute("aria-label") or ""
-                        parts = [part.strip() for part in re.split(r"[,，]", label)]
-                        values = [parse_human_number(part) for part in parts]
-                        values = [value for value in values if value is not None]
-                        if len(values) == 3:
-                            captured.update(
-                                {"reposts": values[0], "comments": values[1], "likes": values[2]}
-                            )
-                            break
+                        candidates.append(footers.nth(index).get_attribute("aria-label") or "")
+
+                    for selector in (
+                        '[aria-label*="转发"]', '[aria-label*="评论"]',
+                        '[aria-label*="点赞"]', '[aria-label*="赞"]',
+                        'button', '[role="button"]',
+                    ):
+                        nodes = page.locator(selector)
+                        for index in range(min(nodes.count(), 80)):
+                            node = nodes.nth(index)
+                            try:
+                                aria = node.get_attribute("aria-label") or ""
+                                text = node.inner_text(timeout=1_500).strip()
+                            except Exception:
+                                continue
+                            if aria:
+                                candidates.append(aria)
+                            if text and any(label in text for label in ("转发", "评论", "点赞", "赞")):
+                                candidates.append(text)
+
+                    # The visible interaction rail on video pages can be plain
+                    # text rather than buttons. Restrict the fallback to main/body
+                    # text and require explicit interaction labels.
+                    main_text = _read_locator_text(page, "main") or _read_locator_text(page, "body")
+                    if main_text:
+                        candidates.append(main_text)
+
+                    row = extract_weibo_metric_row(candidates)
+                    if len(row) >= 2:
+                        captured.update(row)
                 changed = False
                 for key in ("likes", "comments", "reposts"):
                     if key in captured:
@@ -1135,6 +1231,10 @@ def update_xhs_profile(short_url: str, target: dict[str, Any]) -> bool:
 def recalculate_summary(data: dict[str, Any]) -> bool:
     changed = False
     platforms = data.get("platforms", {})
+
+    # Three publicly announced duo brand identities are now included in the
+    # business section: AFU, FunnyElves and LEECN.
+    changed |= set_number(data.setdefault("summary", {}), "brandCooperations", 3)
 
     # Two artists, three Chinese public platforms, explicitly excluding the duo account.
     follower_total = 0
@@ -1234,6 +1334,23 @@ def main() -> int:
             "label": "后来我们有了夏天🍃🧩",
         })
         changed = True
+    else:
+        # Keep the migrated item normalized even if an earlier incremental
+        # package already changed only the URL. If a legacy status_id survived,
+        # it belongs to the former post and must never be queried for this video.
+        if weibo_item03.pop("status_id", None) is not None:
+            for metric_key in ("likes", "comments", "reposts"):
+                weibo_item03[metric_key] = None
+            changed = True
+        normalized = {
+            "video_fid": "5330100514652254",
+            "video_url": new_weibo_video_url,
+            "label": "后来我们有了夏天🍃🧩",
+        }
+        for key, value in normalized.items():
+            if weibo_item03.get(key) != value:
+                weibo_item03[key] = value
+                changed = True
 
     sources = data.get("sources", {})
     platforms = data.get("platforms", {})

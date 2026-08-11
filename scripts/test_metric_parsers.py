@@ -1,5 +1,6 @@
 from update_public_metrics import (
     extract_four_metric_row,
+    extract_weibo_metric_row,
     extract_number_after_label,
     parse_human_number,
     recursively_find_stats,
@@ -22,6 +23,16 @@ def main() -> None:
         "favorites": 5314,
         "shares": 6942,
     }
+    assert extract_weibo_metric_row(["转发 1888 评论 1172 点赞 1.3万"]) == {
+        "reposts": 1888,
+        "comments": 1172,
+        "likes": 13000,
+    }
+    assert extract_weibo_metric_row(["1888,1172,1.3万"]) == {
+        "reposts": 1888,
+        "comments": 1172,
+        "likes": 13000,
+    }
     payload = {
         "aweme_detail": {
             "aweme_id": "7667876245400742346",
@@ -34,6 +45,21 @@ def main() -> None:
         }
     }
     assert recursively_find_stats(payload, "7667876245400742346")["shares"] == 6942
+    weibo_video_payload = {
+        "data": {
+            "fid": "1034:5330100514652254",
+            "statistics": {
+                "attitudes_count": 13000,
+                "comments_count": 1172,
+                "reposts_count": 1888,
+            },
+        }
+    }
+    assert recursively_find_stats(weibo_video_payload, "5330100514652254") == {
+        "likes": 13000,
+        "comments": 1172,
+        "reposts": 1888,
+    }
     mixed_payload = {
         "aweme_list": [
             {

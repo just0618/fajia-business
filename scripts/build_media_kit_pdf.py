@@ -366,7 +366,7 @@ def build():
         (fmt(artist_followers)+"+","三平台公开账号粉丝合计","跨平台未去重"),
         (fmt(dy_likes),"两位艺人抖音累计获赞","公开主页口径"),
         ("115万+","代表性抖音共创内容获赞","多条突破10万点赞"),
-        ("2项","已公开双人品牌合作身份","阿芙 · 方里"),
+        ("3项","已公开双人品牌合作身份","阿芙 · 方里 · 莉肯"),
     ]): metric_box(c,48+i*218,330,200,102,v,l,note)
     draw_text(c,"法嘉致富，取自法宣阁、贺嘉述名字中的“法”与“嘉”二字，搭配“致富”寓意二人相伴顺遂、前程向好。\n\n两人因共同出演《双程》副CP而受到广泛关注，粉丝名为小发夹，取自“法嘉”谐音，应援色为粉金色。\n\n法宣阁的沉稳细腻与贺嘉述的灵动表达，无论在公开活动、双人直播、舞台演出与内容呈现中，形成鲜明互补，展现出自然互动、双向托底和强烈的关系叙事能力。",48,285,390,font="CN",size=10.4,color=INK,leading=18,max_lines=13)
     draw_img(c,"assets/double-helix-official-duo.webp",470,52,290,255,"cover",radius=8)
@@ -515,12 +515,24 @@ def build():
     c.drawCentredString(805,38,"官方直播")
     c.showPage(); page+=1
 
-    # Upcoming page - LEECN remains the current upcoming cooperation.
-    gradient(c, SOFT_PINK, SOFT_GOLD)
-    eyebrow(c,"UPCOMING",58,450,size=10,tracking=1.8)
-    c.setFont("CNDisplay",38); c.setFillColor(INK); c.drawString(58,390,"即将公开")
-    upcoming_card(c,150,105,660,230,"BRAND COOPERATION","LEECN 莉肯","新序美学大使")
-    footer(c,page); c.showPage(); page+=1
+    # 12 LEECN
+    new_page(c,page)
+    title(c,"LEECN 莉肯","BUSINESS COOPERATION · BEAUTY / NEW SEQUENCE")
+    c.setFont("CN",12); c.setFillColor(PINK_DARK); c.drawString(50,390,"新序美学大使")
+    draw_text(c,"「宣」启新序，「述」写底色，丝绒落唇，心动自有颜色。",50,355,850,font="CN",size=13,color=INK,leading=20,max_lines=2)
+    draw_img(c,"assets/leecnposter.webp",50,56,270,275,"contain",radius=8)
+    rounded_box(c,340,56,340,275,fill=PAPER,stroke=LINE,radius=8)
+    c.setFont("CN",10.6); c.setFillColor(INK); c.drawString(360,304,"贺嘉述 与 LEECN莉肯 等 3 人的共创微博")
+    c.setFont("CN",8); c.setFillColor(MUTED); c.drawString(360,286,"8-10 10:00")
+    draw_text(c,"有关于「我们」的蝉鸣盛夏——\n是琴弦上跳跃的松弛，胶片里不经意的对视，\n亦是唇间粉雾般的轻盈，晚风里恰到好处的沁润。\n\n「宣」启新序，「述」写底色。\n很高兴成为 LEECN莉肯 新序美学大使。\n\n丝绒落唇，心动自有颜色；精油养护，温润一触即知。",360,260,300,font="CN",size=8.9,color=INK,leading=15,max_lines=12)
+    c.setFont("CN",7.8); c.setFillColor(BLUE); c.drawString(360,86,"#LEECN莉肯新序美学大使法宣阁贺嘉述")
+    c.setFont("CN",7.8); c.setFillColor(BLUE); c.drawString(360,72,"#LEECN莉肯  #LEECN  #莉肯")
+    hyperlink(c,"https://weibo.com/8348577978/5330305058865293",340,56,340,275)
+    draw_img(c,"assets/posters/leecn-tvc.jpg",700,56,210,275,"cover",radius=8,bg=DARK)
+    c.setFont("CN",9); c.setFillColor(MUTED); c.drawCentredString(185,38,"官方图片")
+    c.drawCentredString(510,38,"官宣微博")
+    c.drawCentredString(805,38,"官宣视频")
+    c.showPage(); page+=1
 
     # 13 V generation
     new_page(c,page,bg=SOFT_PINK)
