@@ -1016,6 +1016,7 @@ def browser_collect(
         for url, status_id, target in weibo_jobs:
             page = context.new_page()
             captured: dict[str, int] = {}
+            item_label = status_id or str(target.get("video_fid") or "video-detail")
 
             def on_weibo_response(response: Any) -> None:
                 nonlocal captured
@@ -1029,8 +1030,11 @@ def browser_collect(
                     payload = response.json()
                 except Exception:
                     return
-                stats = recursively_find_stats(payload, status_id)
+                stats = recursively_find_stats(payload, status_id or None)
                 # Weibo's three metrics may sit directly on the status dict.
+                # Video-only links may not expose a status_id; in that case the
+                # detail page response is scoped to the opened video, so an
+                # unscoped metric search is safer than reusing an unrelated id.
                 if len(stats) >= 2:
                     captured.update(stats)
 
@@ -1058,21 +1062,21 @@ def browser_collect(
                         changed |= set_number(target, key, captured[key])
                 any_changed |= changed
                 log(
-                    f"[weibo] {status_id}: "
+                    f"[weibo] {item_label}: "
                     + (json.dumps(captured, ensure_ascii=False) if captured else "no metrics")
                 )
                 if debug or not captured:
                     _write_debug(
                         page,
-                        f"weibo-{status_id}",
+                        f"weibo-{item_label}",
                         f"captured={json.dumps(captured, ensure_ascii=False)}",
                     )
             except PlaywrightTimeoutError as exc:
-                log(f"[skip/browser/weibo] timeout {status_id}: {exc}")
-                _write_debug(page, f"weibo-{status_id}-timeout", str(exc))
+                log(f"[skip/browser/weibo] timeout {item_label}: {exc}")
+                _write_debug(page, f"weibo-{item_label}-timeout", str(exc))
             except Exception as exc:
-                log(f"[skip/browser/weibo] {status_id}: {exc}")
-                _write_debug(page, f"weibo-{status_id}-error", str(exc))
+                log(f"[skip/browser/weibo] {item_label}: {exc}")
+                _write_debug(page, f"weibo-{item_label}-error", str(exc))
             finally:
                 page.close()
 
@@ -1210,6 +1214,27 @@ def main() -> int:
         for metric_key in ("likes", "comments", "favorites", "shares"):
             item03[metric_key] = None
         changed = True
+
+    # V0.33 content migration: replace the former jewelrybox gift card with the
+    # latest co-created Weibo video. The supplied link is a video detail URL and
+    # does not expose a stable status_id in the URL, so clear the former post's
+    # counters once and let the browser collector repopulate them from the new
+    # detail page.
+    weibo_item03 = data.setdefault("content", {}).setdefault("weibo", {}).setdefault("item03", {})
+    new_weibo_video_url = "https://video.weibo.com/show?fid=1034:5330100514652254"
+    if weibo_item03.get("url") != new_weibo_video_url:
+        weibo_item03.clear()
+        weibo_item03.update({
+            "video_fid": "5330100514652254",
+            "video_url": new_weibo_video_url,
+            "url": new_weibo_video_url,
+            "likes": None,
+            "comments": None,
+            "reposts": None,
+            "label": "后来我们有了夏天🍃🧩",
+        })
+        changed = True
+
     sources = data.get("sources", {})
     platforms = data.get("platforms", {})
 
@@ -1263,9 +1288,12 @@ def main() -> int:
     for item in data.get("content", {}).get("weibo", {}).values():
         status_id = str(item.get("status_id") or "")
         url = item.get("url") or item.get("video_url")
-        if not status_id or not url:
+        if not url:
             continue
-        changed |= update_weibo_status_requests(status_id, item)
+        # Standard posts still use the lightweight public JSON endpoint first.
+        # Video-only detail links are collected in Chromium below.
+        if status_id:
+            changed |= update_weibo_status_requests(status_id, item)
         weibo_jobs.append((url, status_id, item))
 
     if not args.requests_only and (douyin_jobs or weibo_jobs):

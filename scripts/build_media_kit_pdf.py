@@ -299,7 +299,18 @@ def content_card(c,x,y,w,h,poster,title_text,metrics,url,landscape=False):
     image_h=h*.60
     draw_img(c,poster,x,y+h-image_h,w,image_h,"cover",radius=10)
     title_y=y+h-image_h-28
-    draw_text(c,title_text,x+16,title_y,w-32,font="CN",size=12.8,color=INK,leading=18,max_lines=2)
+    if "🍃🧩" in title_text:
+        # ReportLab's CJK font does not contain color emoji glyphs, so draw the
+        # readable Chinese title as text and append the two emoji as a small PNG.
+        base_title = title_text.replace("🍃🧩", "").rstrip()
+        c.setFont("CN",12.8); c.setFillColor(INK)
+        c.drawString(x+16,title_y,base_title)
+        tw = text_width(base_title,"CN",12.8)
+        emoji_path = ASSETS / "emoji-summer.png"
+        if emoji_path.exists():
+            c.drawImage(str(emoji_path),x+16+tw+4,title_y-3,width=30,height=14.5,mask="auto",preserveAspectRatio=True,anchor="c")
+    else:
+        draw_text(c,title_text,x+16,title_y,w-32,font="CN",size=12.8,color=INK,leading=18,max_lines=2)
     c.setStrokeColor(LINE); c.line(x+14,y+59,x+w-14,y+59)
     items=[]
     if metrics.get("likes") is not None: items.append(("赞",fmt(metrics.get("likes"))))
@@ -316,6 +327,8 @@ def content_card(c,x,y,w,h,poster,title_text,metrics,url,landscape=False):
             c.roundRect(px,y+18,pill_w,28,6,fill=1,stroke=0)
             c.setFont("CN",7.5); c.setFillColor(PINK_DARK); c.drawString(px+6,y+28,lab)
             c.setFont("CNDisplay",9.5); c.setFillColor(INK); c.drawRightString(px+pill_w-6,y+27,val)
+    else:
+        c.setFont("CN",8.5); c.setFillColor(MUTED); c.drawString(x+16,y+28,"互动数据待自动更新")
     hyperlink(c,url,x,y,w,h)
 
 
@@ -460,7 +473,7 @@ def build():
     # 9 weibo content
     new_page(c,page)
     title(c,"微博高赞作品","WEIBO")
-    wb_cards=[("item02","assets/posters/weibo-qingdao.jpg","心动是初次见面的悸动，而爱是往后每一次，我转过头，你都在"),("item01","assets/posters/weibo-like-you.jpg","《喜欢你》"),("item03","assets/posters/weibo-gift.jpg","专属于小发夹的礼物🎁")]
+    wb_cards=[("item03","assets/posters/weibo-new-cocreate.jpg","后来我们有了夏天🍃🧩"),("item02","assets/posters/weibo-qingdao.jpg","心动是初次见面的悸动，而爱是往后每一次，我转过头，你都在"),("item01","assets/posters/weibo-like-you.jpg","《喜欢你》")]
     for i,(key,poster,label) in enumerate(wb_cards):
         item=wb[key]
         content_card(c,36+i*306,65,276,350,poster,label,item,item["url"])

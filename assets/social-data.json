@@ -19,26 +19,26 @@
   "platforms": {
     "douyin": {
       "faxuange": {
-        "followers": 235000,
-        "engagement": 3201000
+        "followers": 233000,
+        "engagement": 3168000
       },
       "hejiashu": {
-        "followers": 346000,
-        "engagement": 5905000
+        "followers": 339000,
+        "engagement": 5864000
       }
     },
     "weibo": {
       "faxuange": {
         "followers": 211000,
-        "engagement": 965000
+        "engagement": 962000
       },
       "hejiashu": {
         "followers": 283000,
-        "engagement": 1386000
+        "engagement": 1374000
       },
       "jewelrybox": {
         "followers": 38000,
-        "engagement": 346000
+        "engagement": 335000
       }
     },
     "xhs": {
@@ -87,10 +87,10 @@
       },
       "item03": {
         "url": "https://www.douyin.com/note/7670451363546191754",
-        "likes": 447000,
+        "likes": 441000,
         "comments": 23000,
         "favorites": 25000,
-        "shares": 54000,
+        "shares": 53000,
         "label": "还能遇见你"
       }
     },
@@ -98,35 +98,35 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11163,
-        "comments": 1234,
-        "reposts": 2904,
+        "likes": 11144,
+        "comments": 1235,
+        "reposts": 2905,
         "label": "喜欢你"
       },
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 20856,
-        "comments": 3073,
-        "reposts": 4652,
+        "likes": 20774,
+        "comments": 3072,
+        "reposts": 4657,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
-        "status_id": "5323195886345801",
-        "video_url": "https://weibo.com/tv/show/1034:5323193712312362?from=old_pc_videoshow",
-        "likes": 10922,
-        "comments": 1326,
-        "reposts": 856,
-        "label": "专属于小发夹的礼物🎁",
-        "url": "https://weibo.com/8344769962/5323195886345801"
+        "video_fid": "5330100514652254",
+        "video_url": "https://video.weibo.com/show?fid=1034:5330100514652254",
+        "url": "https://video.weibo.com/show?fid=1034:5330100514652254",
+        "likes": null,
+        "comments": null,
+        "reposts": null,
+        "label": "后来，我们有了家"
       }
     }
   },
   "summary": {
     "representativeDouyinLikes": 1150000,
     "brandCooperations": 2,
-    "artistFollowers3Platforms": 1149000,
-    "artistDouyinTotalLikes": 9106000
+    "artistFollowers3Platforms": 1140000,
+    "artistDouyinTotalLikes": 9032000
   },
-  "last_attempt": "2026-08-11T05:32:08+00:00"
+  "last_attempt": "2026-08-10T05:47:29+00:00"
 }
