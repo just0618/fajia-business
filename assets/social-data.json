@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-30",
+  "updated": "2026-08-31",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -20,21 +20,21 @@
     "douyin": {
       "faxuange": {
         "followers": 250000,
-        "engagement": 3443000
+        "engagement": 3446000
       },
       "hejiashu": {
         "followers": 367000,
-        "engagement": 6484000
+        "engagement": 6490000
       }
     },
     "weibo": {
       "faxuange": {
         "followers": 217000,
-        "engagement": 1251000
+        "engagement": 1253000
       },
       "hejiashu": {
-        "followers": 287000,
-        "engagement": 1662000
+        "followers": 288000,
+        "engagement": 1686000
       },
       "jewelrybox": {
         "followers": 39000,
@@ -87,7 +87,7 @@
       },
       "item03": {
         "url": "https://www.douyin.com/note/7670451363546191754",
-        "likes": 499000,
+        "likes": 500000,
         "comments": 24000,
         "favorites": 29000,
         "shares": 61000,
@@ -98,7 +98,7 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11426,
+        "likes": 11455,
         "comments": 1240,
         "reposts": 2915,
         "label": "喜欢你"
@@ -106,16 +106,16 @@
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 21325,
+        "likes": 21333,
         "comments": 3092,
-        "reposts": 5009,
+        "reposts": 5008,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
         "video_fid": "5330100514652254",
         "video_url": "https://video.weibo.com/show?fid=1034:5330100514652254",
         "url": "https://weibo.com/8348577978/5330103329363208",
-        "likes": 20696,
+        "likes": 20748,
         "comments": 3161,
         "reposts": 3919,
         "label": "后来我们有了夏天🍃🧩",
@@ -126,8 +126,8 @@
   "summary": {
     "representativeDouyinLikes": 1150000,
     "brandCooperations": 3,
-    "artistFollowers3Platforms": 1195000,
-    "artistDouyinTotalLikes": 9927000
+    "artistFollowers3Platforms": 1196000,
+    "artistDouyinTotalLikes": 9936000
   },
-  "last_attempt": "2026-08-30T09:59:44+00:00"
+  "last_attempt": "2026-08-31T10:55:11+00:00"
 }
