@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-02",
+  "updated": "2026-09-03",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -20,25 +20,25 @@
     "douyin": {
       "faxuange": {
         "followers": 250000,
-        "engagement": 3449000
+        "engagement": 3546000
       },
       "hejiashu": {
-        "followers": 366000,
-        "engagement": 6495000
+        "followers": 367000,
+        "engagement": 6596000
       }
     },
     "weibo": {
       "faxuange": {
         "followers": 217000,
-        "engagement": 1255000
+        "engagement": 1256000
       },
       "hejiashu": {
         "followers": 288000,
-        "engagement": 1689000
+        "engagement": 1716000
       },
       "jewelrybox": {
         "followers": 39000,
-        "engagement": 408000
+        "engagement": 409000
       }
     },
     "xhs": {
@@ -87,7 +87,7 @@
       },
       "item03": {
         "url": "https://www.douyin.com/note/7670451363546191754",
-        "likes": 501000,
+        "likes": 502000,
         "comments": 24000,
         "favorites": 29000,
         "shares": 61000,
@@ -126,8 +126,8 @@
   "summary": {
     "representativeDouyinLikes": 1150000,
     "brandCooperations": 3,
-    "artistFollowers3Platforms": 1195000,
-    "artistDouyinTotalLikes": 9944000
+    "artistFollowers3Platforms": 1196000,
+    "artistDouyinTotalLikes": 10142000
   },
-  "last_attempt": "2026-09-02T08:50:55+00:00"
+  "last_attempt": "2026-09-03T09:02:29+00:00"
 }
