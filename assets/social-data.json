@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-06",
+  "updated": "2026-09-07",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -24,17 +24,17 @@
       },
       "hejiashu": {
         "followers": 368000,
-        "engagement": 6679000
+        "engagement": 6715000
       }
     },
     "weibo": {
       "faxuange": {
         "followers": 217000,
-        "engagement": 1275000
+        "engagement": 1283000
       },
       "hejiashu": {
         "followers": 288000,
-        "engagement": 1893000
+        "engagement": 1894000
       },
       "jewelrybox": {
         "followers": 39000,
@@ -98,26 +98,26 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11477,
+        "likes": 11480,
         "comments": 1240,
-        "reposts": 2912,
+        "reposts": 2914,
         "label": "喜欢你"
       },
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 21353,
+        "likes": 21355,
         "comments": 3093,
-        "reposts": 5001,
+        "reposts": 5000,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
         "video_fid": "5330100514652254",
         "video_url": "https://video.weibo.com/show?fid=1034:5330100514652254",
         "url": "https://weibo.com/8348577978/5330103329363208",
-        "likes": 20918,
-        "comments": 3164,
-        "reposts": 3914,
+        "likes": 20942,
+        "comments": 3165,
+        "reposts": 3913,
         "label": "后来我们有了夏天🍃🧩",
         "status_id": "5330103329363208"
       }
@@ -127,7 +127,7 @@
     "representativeDouyinLikes": 1150000,
     "brandCooperations": 3,
     "artistFollowers3Platforms": 1197000,
-    "artistDouyinTotalLikes": 10301000
+    "artistDouyinTotalLikes": 10337000
   },
-  "last_attempt": "2026-09-06T08:43:06+00:00"
+  "last_attempt": "2026-09-07T09:23:44+00:00"
 }
