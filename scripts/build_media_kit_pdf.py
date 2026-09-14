@@ -599,7 +599,19 @@ def build():
     draw_img(c,"assets/fanmeeting-live-1.webp",683,58,229,144,"cover",radius=8)
     c.showPage(); page+=1
 
-    # 17 legal/contact
+    # 17 Macau fan meeting - same safe editorial grid
+    new_page(c,page)
+    title(c,"「宣之于口，嘉许于心」澳门见面会","LIVE EVENTS · 2026.09.12",cn_size=27)
+    draw_img(c,"assets/macau-fanmeet-poster.webp",48,58,224,338,"contain",radius=8)
+    draw_img(c,"assets/macau-fanmeet-live-1.webp",302,222,610,176,"cover",radius=8)
+    rounded_box(c,302,58,365,144,fill=CREAM,stroke=LINE,radius=10)
+    c.setFont("CN",10); c.setFillColor(PINK_DARK); c.drawString(324,174,"澳门 · 澳门渔人码头 Macau Fisherman's Wharf")
+    c.setFont("CNDisplay",18); c.setFillColor(INK); c.drawString(324,143,"宣之于口，嘉许于心")
+    draw_text(c,"将隐藏在心底的喜欢「宣之于口」，\n把最真挚的偏爱「嘉许于心」，\n与初秋一起到来的，是见面，也是最真切的感受。",324,113,320,font="CN",size=10.0,color=INK,leading=18,max_lines=5)
+    draw_img(c,"assets/macau-fanmeet-live-2.webp",683,58,229,144,"cover",radius=8)
+    c.showPage(); page+=1
+
+    # 18 legal/contact
     gradient(c, SOFT_PINK, SOFT_GOLD)
     eyebrow(c,"RESOURCE DOWNLOADS · CONTACT",58,450,size=10,tracking=1.8)
     c.setFont("CNDisplay",38); c.setFillColor(INK); c.drawString(58,380,"资料下载与合作建联")
