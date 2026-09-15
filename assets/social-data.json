@@ -20,7 +20,7 @@
     "douyin": {
       "faxuange": {
         "followers": 250000,
-        "engagement": 3739000
+        "engagement": 3740000
       },
       "hejiashu": {
         "followers": 369000,
@@ -30,7 +30,7 @@
     "weibo": {
       "faxuange": {
         "followers": 217000,
-        "engagement": 1307000
+        "engagement": 1308000
       },
       "hejiashu": {
         "followers": 288000,
@@ -71,18 +71,18 @@
     "douyin": {
       "item01": {
         "url": "https://www.douyin.com/video/7664238615464070510",
-        "likes": 401060,
-        "comments": 11089,
-        "favorites": 17330,
-        "shares": 39298,
+        "likes": 504000,
+        "comments": 12000,
+        "favorites": 23000,
+        "shares": 49000,
         "label": "好难教的徒儿"
       },
       "item02": {
         "url": "https://www.douyin.com/video/7651140292226052590",
-        "likes": 242653,
-        "comments": 6273,
-        "favorites": 12077,
-        "shares": 31025,
+        "likes": 276000,
+        "comments": 6429,
+        "favorites": 14000,
+        "shares": 33000,
         "label": "#欧巴"
       },
       "item03": {
@@ -98,7 +98,7 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11486,
+        "likes": 11488,
         "comments": 1240,
         "reposts": 2912,
         "label": "喜欢你"
@@ -124,10 +124,10 @@
     }
   },
   "summary": {
-    "representativeDouyinLikes": 1150000,
+    "representativeDouyinLikes": 1290000,
     "brandCooperations": 3,
     "artistFollowers3Platforms": 1198000,
-    "artistDouyinTotalLikes": 10549000
+    "artistDouyinTotalLikes": 10550000
   },
-  "last_attempt": "2026-09-15T13:31:29+00:00"
+  "last_attempt": "2026-09-15T14:04:08+00:00"
 }
