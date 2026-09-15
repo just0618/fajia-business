@@ -42,6 +42,7 @@ jobs:
           DEBUG_ARG=""
           if [ "${{ github.event.inputs.debug }}" = "true" ]; then DEBUG_ARG="--debug"; fi
           python scripts/update_public_metrics.py $DEBUG_ARG
+          python scripts/update_douyin_fallback_metrics.py $DEBUG_ARG
 
       - name: Detect public data changes
         id: metrics
