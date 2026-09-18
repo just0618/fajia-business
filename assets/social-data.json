@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-17",
+  "updated": "2026-09-18",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -24,21 +24,21 @@
       },
       "hejiashu": {
         "followers": 369000,
-        "engagement": 6815000
+        "engagement": 6818000
       }
     },
     "weibo": {
       "faxuange": {
         "followers": 217000,
-        "engagement": 1308000
+        "engagement": 1310000
       },
       "hejiashu": {
         "followers": 288000,
-        "engagement": 1918000
+        "engagement": 1920000
       },
       "jewelrybox": {
         "followers": 39000,
-        "engagement": 449000
+        "engagement": 451000
       }
     },
     "xhs": {
@@ -98,7 +98,7 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11489,
+        "likes": 11493,
         "comments": 1240,
         "reposts": 2912,
         "label": "喜欢你"
@@ -115,9 +115,9 @@
         "video_fid": "5330100514652254",
         "video_url": "https://video.weibo.com/show?fid=1034:5330100514652254",
         "url": "https://weibo.com/8348577978/5330103329363208",
-        "likes": 21140,
+        "likes": 21148,
         "comments": 3165,
-        "reposts": 3898,
+        "reposts": 3897,
         "label": "后来我们有了夏天🍃🧩",
         "status_id": "5330103329363208"
       }
@@ -127,7 +127,7 @@
     "representativeDouyinLikes": 1290000,
     "brandCooperations": 3,
     "artistFollowers3Platforms": 1199000,
-    "artistDouyinTotalLikes": 10561000
+    "artistDouyinTotalLikes": 10564000
   },
-  "last_attempt": "2026-09-17T09:29:59+00:00"
+  "last_attempt": "2026-09-18T09:03:31+00:00"
 }
