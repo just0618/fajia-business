@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-03",
+  "updated": "2026-11-04",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -24,7 +24,7 @@
       },
       "hejiashu": {
         "followers": 384000,
-        "engagement": 7680000
+        "engagement": 7684000
       }
     },
     "weibo": {
@@ -80,17 +80,17 @@
       "item02": {
         "url": "https://www.douyin.com/video/7651140292226052590",
         "likes": 272000,
-        "comments": 6470,
+        "comments": 6471,
         "favorites": 13000,
         "shares": 34000,
         "label": "#欧巴"
       },
       "item03": {
         "url": "https://www.douyin.com/note/7670451363546191754",
-        "likes": 117000,
-        "comments": 848,
-        "favorites": 12000,
-        "shares": 13000,
+        "likes": 575000,
+        "comments": 16000,
+        "favorites": 21000,
+        "shares": 1902000,
         "label": "还能遇见你"
       }
     },
@@ -98,16 +98,16 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11577,
+        "likes": 11578,
         "comments": 1239,
-        "reposts": 2898,
+        "reposts": 2899,
         "label": "喜欢你"
       },
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 21368,
-        "comments": 3085,
+        "likes": 21370,
+        "comments": 3086,
         "reposts": 4701,
         "label": "法嘉现实向背景短片"
       },
@@ -124,10 +124,10 @@
     }
   },
   "summary": {
-    "representativeDouyinLikes": 780000,
+    "representativeDouyinLikes": 1350000,
     "brandCooperations": 3,
     "artistFollowers3Platforms": 1156000,
-    "artistDouyinTotalLikes": 11519000
+    "artistDouyinTotalLikes": 11523000
   },
-  "last_attempt": "2026-11-03T11:59:46+00:00"
+  "last_attempt": "2026-11-04T12:11:20+00:00"
 }
