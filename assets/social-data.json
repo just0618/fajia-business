@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-06",
+  "updated": "2026-11-07",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -19,26 +19,26 @@
   "platforms": {
     "douyin": {
       "faxuange": {
-        "followers": 201000,
+        "followers": 200000,
         "engagement": 3839000
       },
       "hejiashu": {
         "followers": 384000,
-        "engagement": 7690000
+        "engagement": 7697000
       }
     },
     "weibo": {
       "faxuange": {
         "followers": 204000,
-        "engagement": 1459000
+        "engagement": 1460000
       },
       "hejiashu": {
         "followers": 292000,
-        "engagement": 2991000
+        "engagement": 2992000
       },
       "jewelrybox": {
         "followers": 33000,
-        "engagement": 500000
+        "engagement": 501000
       }
     },
     "xhs": {
@@ -80,17 +80,17 @@
       "item02": {
         "url": "https://www.douyin.com/video/7651140292226052590",
         "likes": 272000,
-        "comments": 6473,
+        "comments": 6474,
         "favorites": 13000,
         "shares": 34000,
         "label": "#欧巴"
       },
       "item03": {
         "url": "https://www.douyin.com/note/7670451363546191754",
-        "likes": 15000,
-        "comments": 336,
-        "favorites": 2517,
-        "shares": 731,
+        "likes": 6674,
+        "comments": 75,
+        "favorites": 986,
+        "shares": 186,
         "label": "还能遇见你"
       }
     },
@@ -98,7 +98,7 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11579,
+        "likes": 11577,
         "comments": 1240,
         "reposts": 2898,
         "label": "喜欢你"
@@ -106,28 +106,28 @@
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 21365,
+        "likes": 21362,
         "comments": 3084,
-        "reposts": 4695,
+        "reposts": 4693,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
         "video_fid": "5330100514652254",
         "video_url": "https://video.weibo.com/show?fid=1034:5330100514652254",
         "url": "https://weibo.com/8348577978/5330103329363208",
-        "likes": 21317,
+        "likes": 21312,
         "comments": 3148,
-        "reposts": 3628,
+        "reposts": 3627,
         "label": "后来我们有了夏天🍃🧩",
         "status_id": "5330103329363208"
       }
     }
   },
   "summary": {
-    "representativeDouyinLikes": 790000,
+    "representativeDouyinLikes": 780000,
     "brandCooperations": 3,
-    "artistFollowers3Platforms": 1155000,
-    "artistDouyinTotalLikes": 11529000
+    "artistFollowers3Platforms": 1154000,
+    "artistDouyinTotalLikes": 11536000
   },
-  "last_attempt": "2026-11-06T12:09:24+00:00"
+  "last_attempt": "2026-11-07T11:06:26+00:00"
 }
