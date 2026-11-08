@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-07",
+  "updated": "2026-11-08",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -24,7 +24,7 @@
       },
       "hejiashu": {
         "followers": 384000,
-        "engagement": 7697000
+        "engagement": 7701000
       }
     },
     "weibo": {
@@ -33,7 +33,7 @@
         "engagement": 1460000
       },
       "hejiashu": {
-        "followers": 292000,
+        "followers": 291000,
         "engagement": 2992000
       },
       "jewelrybox": {
@@ -87,10 +87,10 @@
       },
       "item03": {
         "url": "https://www.douyin.com/note/7670451363546191754",
-        "likes": 6674,
-        "comments": 75,
-        "favorites": 986,
-        "shares": 186,
+        "likes": 61000,
+        "comments": 1924,
+        "favorites": 17000,
+        "shares": 5547,
         "label": "还能遇见你"
       }
     },
@@ -106,18 +106,18 @@
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 21362,
+        "likes": 21359,
         "comments": 3084,
-        "reposts": 4693,
+        "reposts": 4691,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
         "video_fid": "5330100514652254",
         "video_url": "https://video.weibo.com/show?fid=1034:5330100514652254",
         "url": "https://weibo.com/8348577978/5330103329363208",
-        "likes": 21312,
-        "comments": 3148,
-        "reposts": 3627,
+        "likes": 21310,
+        "comments": 3149,
+        "reposts": 3626,
         "label": "后来我们有了夏天🍃🧩",
         "status_id": "5330103329363208"
       }
@@ -126,8 +126,8 @@
   "summary": {
     "representativeDouyinLikes": 780000,
     "brandCooperations": 3,
-    "artistFollowers3Platforms": 1154000,
-    "artistDouyinTotalLikes": 11536000
+    "artistFollowers3Platforms": 1153000,
+    "artistDouyinTotalLikes": 11540000
   },
-  "last_attempt": "2026-11-07T11:06:26+00:00"
+  "last_attempt": "2026-11-08T11:19:29+00:00"
 }
