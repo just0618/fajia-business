@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-14",
+  "updated": "2026-11-15",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -23,8 +23,8 @@
         "engagement": 3838000
       },
       "hejiashu": {
-        "followers": 382000,
-        "engagement": 7709000
+        "followers": 381000,
+        "engagement": 7711000
       }
     },
     "weibo": {
@@ -34,11 +34,11 @@
       },
       "hejiashu": {
         "followers": 291000,
-        "engagement": 3027000
+        "engagement": 3034000
       },
       "jewelrybox": {
         "followers": 32000,
-        "engagement": 504000
+        "engagement": 506000
       }
     },
     "xhs": {
@@ -98,9 +98,9 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11574,
+        "likes": 11576,
         "comments": 1240,
-        "reposts": 2898,
+        "reposts": 2900,
         "label": "喜欢你"
       },
       "item02": {
@@ -108,7 +108,7 @@
         "url": "https://weibo.com/8348577978/5326791868944100",
         "likes": 21350,
         "comments": 3084,
-        "reposts": 4682,
+        "reposts": 4683,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
@@ -126,8 +126,8 @@
   "summary": {
     "representativeDouyinLikes": 780000,
     "brandCooperations": 3,
-    "artistFollowers3Platforms": 1147000,
-    "artistDouyinTotalLikes": 11547000
+    "artistFollowers3Platforms": 1146000,
+    "artistDouyinTotalLikes": 11549000
   },
-  "last_attempt": "2026-11-14T11:31:30+00:00"
+  "last_attempt": "2026-11-15T12:00:41+00:00"
 }
