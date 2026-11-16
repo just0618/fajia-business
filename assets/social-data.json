@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-15",
+  "updated": "2026-11-16",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -19,12 +19,12 @@
   "platforms": {
     "douyin": {
       "faxuange": {
-        "followers": 197000,
+        "followers": 196000,
         "engagement": 3838000
       },
       "hejiashu": {
         "followers": 381000,
-        "engagement": 7711000
+        "engagement": 7712000
       }
     },
     "weibo": {
@@ -34,11 +34,11 @@
       },
       "hejiashu": {
         "followers": 291000,
-        "engagement": 3034000
+        "engagement": 3036000
       },
       "jewelrybox": {
         "followers": 32000,
-        "engagement": 506000
+        "engagement": 507000
       }
     },
     "xhs": {
@@ -87,10 +87,10 @@
       },
       "item03": {
         "url": "https://www.douyin.com/note/7670451363546191754",
-        "likes": 34000,
-        "comments": 985,
-        "favorites": 6174,
-        "shares": 148,
+        "likes": 3182,
+        "comments": 94,
+        "favorites": 886,
+        "shares": 265,
         "label": "还能遇见你"
       }
     },
@@ -98,7 +98,7 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11576,
+        "likes": 11575,
         "comments": 1240,
         "reposts": 2900,
         "label": "喜欢你"
@@ -115,8 +115,8 @@
         "video_fid": "5330100514652254",
         "video_url": "https://video.weibo.com/show?fid=1034:5330100514652254",
         "url": "https://weibo.com/8348577978/5330103329363208",
-        "likes": 21307,
-        "comments": 3152,
+        "likes": 21308,
+        "comments": 3153,
         "reposts": 3624,
         "label": "后来我们有了夏天🍃🧩",
         "status_id": "5330103329363208"
@@ -126,8 +126,8 @@
   "summary": {
     "representativeDouyinLikes": 780000,
     "brandCooperations": 3,
-    "artistFollowers3Platforms": 1146000,
-    "artistDouyinTotalLikes": 11549000
+    "artistFollowers3Platforms": 1145000,
+    "artistDouyinTotalLikes": 11550000
   },
-  "last_attempt": "2026-11-15T12:00:41+00:00"
+  "last_attempt": "2026-11-16T12:47:54+00:00"
 }
