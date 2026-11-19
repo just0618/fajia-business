@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18",
+  "updated": "2026-11-19",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -24,7 +24,7 @@
       },
       "hejiashu": {
         "followers": 380000,
-        "engagement": 7714000
+        "engagement": 7715000
       }
     },
     "weibo": {
@@ -34,7 +34,7 @@
       },
       "hejiashu": {
         "followers": 290000,
-        "engagement": 3039000
+        "engagement": 3040000
       },
       "jewelrybox": {
         "followers": 32000,
@@ -80,7 +80,7 @@
       "item02": {
         "url": "https://www.douyin.com/video/7651140292226052590",
         "likes": 271000,
-        "comments": 6475,
+        "comments": 6473,
         "favorites": 13000,
         "shares": 34000,
         "label": "#欧巴"
@@ -98,7 +98,7 @@
       "item01": {
         "status_id": "5300746098835869",
         "url": "https://weibo.com/1118449424/5300746098835869",
-        "likes": 11574,
+        "likes": 11573,
         "comments": 1240,
         "reposts": 2900,
         "label": "喜欢你"
@@ -106,9 +106,9 @@
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 21347,
-        "comments": 3084,
-        "reposts": 4681,
+        "likes": 21346,
+        "comments": 3085,
+        "reposts": 4682,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
@@ -117,7 +117,7 @@
         "url": "https://weibo.com/8348577978/5330103329363208",
         "likes": 21308,
         "comments": 3153,
-        "reposts": 3619,
+        "reposts": 3618,
         "label": "后来我们有了夏天🍃🧩",
         "status_id": "5330103329363208"
       }
@@ -127,7 +127,7 @@
     "representativeDouyinLikes": 840000,
     "brandCooperations": 3,
     "artistFollowers3Platforms": 1142000,
-    "artistDouyinTotalLikes": 11552000
+    "artistDouyinTotalLikes": 11553000
   },
-  "last_attempt": "2026-11-18T13:05:17+00:00"
+  "last_attempt": "2026-11-19T13:13:14+00:00"
 }
