@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-22",
+  "updated": "2026-11-23",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -30,15 +30,15 @@
     "weibo": {
       "faxuange": {
         "followers": 201000,
-        "engagement": 1465000
+        "engagement": 1466000
       },
       "hejiashu": {
         "followers": 290000,
-        "engagement": 3055000
+        "engagement": 3057000
       },
       "jewelrybox": {
         "followers": 32000,
-        "engagement": 514000
+        "engagement": 515000
       }
     },
     "xhs": {
@@ -80,17 +80,17 @@
       "item02": {
         "url": "https://www.douyin.com/video/7651140292226052590",
         "likes": 271000,
-        "comments": 6476,
+        "comments": 6474,
         "favorites": 13000,
         "shares": 34000,
         "label": "#欧巴"
       },
       "item03": {
         "url": "https://www.douyin.com/note/7670451363546191754",
-        "likes": 73000,
-        "comments": 276,
-        "favorites": 9584,
-        "shares": 11000,
+        "likes": 29000,
+        "comments": 1248,
+        "favorites": 2162,
+        "shares": 6768,
         "label": "还能遇见你"
       }
     },
@@ -106,7 +106,7 @@
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 21344,
+        "likes": 21343,
         "comments": 3085,
         "reposts": 4676,
         "label": "法嘉现实向背景短片"
@@ -117,17 +117,17 @@
         "url": "https://weibo.com/8348577978/5330103329363208",
         "likes": 21306,
         "comments": 3153,
-        "reposts": 3613,
+        "reposts": 3612,
         "label": "后来我们有了夏天🍃🧩",
         "status_id": "5330103329363208"
       }
     }
   },
   "summary": {
-    "representativeDouyinLikes": 840000,
+    "representativeDouyinLikes": 800000,
     "brandCooperations": 3,
     "artistFollowers3Platforms": 1138000,
     "artistDouyinTotalLikes": 11555000
   },
-  "last_attempt": "2026-11-22T12:38:17+00:00"
+  "last_attempt": "2026-11-23T14:41:35+00:00"
 }
