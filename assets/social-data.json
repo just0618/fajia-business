@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-24",
+  "updated": "2026-11-25",
   "sources": {
     "douyin": {
       "faxuange_profile": "https://www.douyin.com/user/MS4wLjABAAAAVhSPpqPrGDxdz4eBuLlkAzrORIiS9mZFkaxARju-GvGBBvY5GSBLm1cH4Cwo92-1",
@@ -19,7 +19,7 @@
   "platforms": {
     "douyin": {
       "faxuange": {
-        "followers": 194000,
+        "followers": 193000,
         "engagement": 3838000
       },
       "hejiashu": {
@@ -30,11 +30,11 @@
     "weibo": {
       "faxuange": {
         "followers": 201000,
-        "engagement": 1467000
+        "engagement": 1468000
       },
       "hejiashu": {
         "followers": 290000,
-        "engagement": 3057000
+        "engagement": 3060000
       },
       "jewelrybox": {
         "followers": 31000,
@@ -87,10 +87,10 @@
       },
       "item03": {
         "url": "https://www.douyin.com/note/7670451363546191754",
-        "likes": 11000,
-        "comments": 72,
-        "favorites": 2492,
-        "shares": 372,
+        "likes": 78000,
+        "comments": 305,
+        "favorites": 10000,
+        "shares": 11000,
         "label": "还能遇见你"
       }
     },
@@ -106,9 +106,9 @@
       "item02": {
         "status_id": "5326791868944100",
         "url": "https://weibo.com/8348577978/5326791868944100",
-        "likes": 21343,
+        "likes": 21341,
         "comments": 3085,
-        "reposts": 4673,
+        "reposts": 4671,
         "label": "法嘉现实向背景短片"
       },
       "item03": {
@@ -117,7 +117,7 @@
         "url": "https://weibo.com/8348577978/5330103329363208",
         "likes": 21306,
         "comments": 3153,
-        "reposts": 3608,
+        "reposts": 3606,
         "label": "后来我们有了夏天🍃🧩",
         "status_id": "5330103329363208"
       }
@@ -126,8 +126,8 @@
   "summary": {
     "representativeDouyinLikes": 800000,
     "brandCooperations": 3,
-    "artistFollowers3Platforms": 1137000,
+    "artistFollowers3Platforms": 1136000,
     "artistDouyinTotalLikes": 11556000
   },
-  "last_attempt": "2026-11-24T14:55:19+00:00"
+  "last_attempt": "2026-11-25T14:25:00+00:00"
 }
